@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MyDay">
+<meta name="theme-color" content="#ffffff" id="theme-color-meta">
+<title>MyDay</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: #e4e2db;
+    --text: #1c1c1a;
+    --text2: #6b6962;
+    --accent: #2d6a4f;
+    --accent-soft: #e6f2ec;
+    --accent2: #52b788;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.07);
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --radius: 16px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  [data-theme="dark"] {
+    --bg: #111110;
+    --surface: #1c1c1a;
+    --surface2: #252522;
+    --border: #2e2e2b;
+    --text: #f0efe9;
+    --text2: #8a8880;
+    --accent: #52b788;
+    --accent-soft: #1a2e23;
+    --accent2: #74c69d;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+    padding-bottom: calc(80px + var(--safe-bottom));
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: calc(var(--safe-top) + 12px) 20px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .logo em { color: var(--accent); font-style: normal; }
+
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.15s;
+    color: var(--text);
+  }
+  .icon-btn:active { background: var(--border); }
+
+  /* DATE STRIP */
+  .date-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .date-strip button {
+    width: 32px; height: 32px;
+    border: none;
+    background: none;
+    font-size: 1.3rem;
+    color: var(--text2);
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .date-strip button:active { background: var(--border); }
+
+  #date-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: center;
+    flex: 1;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 calc(var(--safe-bottom) + 4px);
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-item .nav-icon { font-size: 1.3rem; }
+  .nav-item.active { color: var(--accent); }
+
+  /* ── VIEWS ── */
+  .view { display: none; padding: 16px 16px 0; }
+  .view.active { display: block; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .card-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* ── MOOD ── */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .mood-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 6px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface2);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    color: var(--text2);
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .mood-btn .e { font-size: 1.6rem; line-height: 1; }
+  .mood-btn:active { transform: scale(0.95); }
+  .mood-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* ── TEXTAREA ── */
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    resize: none;
+    background: var(--surface2);
+    color: var(--text);
+    line-height: 1.7;
+    transition: border-color 0.15s, background 0.3s;
+    -webkit-appearance: none;
+  }
+  textarea:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  textarea::placeholder { color: var(--text2); }
+
+  /* ── INPUT ── */
+  input[type="number"], input[type="time"], input[type="text"] {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    background: var(--surface2);
+    color: var(--text);
+    transition: border-color 0.15s, background 0.3s;
+    -webkit-appearance: none;
+  }
+  input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  input::placeholder { color: var(--text2); }
+
+  label.lbl {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  /* ── SLEEP ── */
+  .sleep-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .sleep-result {
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sleep-result span { font-size: 0.82rem; color: var(--text2); }
+  .sleep-result strong { font-size: 1.1rem; color: var(--accent); font-weight: 600; }
+
+  /* ── HABITS ── */
+  .habit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 8px;
+    user-select: none;
+  }
+  .habit-item:active { transform: scale(0.98); }
+  .habit-item.done { background: var(--accent-soft); border-color: var(--accent); }
+
+  .habit-check {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .habit-item.done .habit-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .habit-name { flex: 1; font-size: 0.93rem; }
+  .habit-del { background: none; border: none; color: var(--text2); font-size: 1.1rem; padding: 4px; cursor: pointer; }
+
+  .add-habit-row { display: flex; gap: 8px; margin-top: 4px; }
+  .add-habit-row input { flex: 1; }
+
+  /* ── BUTTON ── */
+  .btn {
+    padding: 13px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    -webkit-appearance: none;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
+  .btn-block { width: 100%; }
+
+  /* ── SAVE ACTIONS ── */
+  .save-actions {
+    padding: 0 16px 16px;
+    display: flex;
+    gap: 10px;
+  }
+  .save-actions .btn-primary { flex: 1; }
+  .save-actions .btn-secondary { width: 48px; padding: 13px 0; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    top: calc(var(--safe-top) + 80px);
+    left: 50%; transform: translateX(-50%) translateY(-10px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── HISTORY ── */
+  .history-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .history-card:active { border-color: var(--accent); }
+
+  .history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .history-date-label {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .history-preview {
+    font-size: 0.83rem;
+    color: var(--text2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+  }
+
+  .history-chips {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text2);
+  }
+  .empty-state .big { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text2);
+    margin: 20px 0 8px;
+    padding: 0 2px;
+  }
+
+  /* ── WEIGHT TREND ── */
+  .weight-display {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .weight-big { font-size: 2rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--accent); }
+  .weight-unit { font-size: 0.9rem; color: var(--text2); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">my<em>day</em></div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Thema wisselen">🌙</button>
+    </div>
+  </div>
+  <div class="date-strip">
+    <button onclick="changeDate(-1)">‹</button>
+    <span id="date-label"></span>
+    <button onclick="changeDate(1)">›</button>
+  </div>
+</div>
+
+<!-- VIEWS -->
+
+<!-- TODAY -->
+<div id="view-today" class="view active">
+
+  <div class="section-label">Stemming</div>
+  <div class="card">
+    <div class="mood-grid" id="mood-picker">
+      <button class="mood-btn" data-mood="amazing" onclick="selectMood(this)"><span class="e">🤩</span>Geweldig</button>
+      <button class="mood-btn" data-mood="good" onclick="selectMood(this)"><span class="e">😊</span>Goed</button>
+      <button class="mood-btn" data-mood="okay" onclick="selectMood(this)"><span class="e">😐</span>Oké</button>
+      <button class="mood-btn" data-mood="meh" onclick="selectMood(this)"><span class="e">😔</span>Niet zo</button>
+      <button class="mood-btn" data-mood="bad" onclick="selectMood(this)"><span class="e">😞</span>Slecht</button>
+      <button class="mood-btn" data-mood="awful" onclick="selectMood(this)"><span class="e">😩</span>Afschuwelijk</button>
+    </div>
+  </div>
+
+  <div class="section-label">Dagboek</div>
+  <div class="card">
+    <textarea id="journal" rows="4" placeholder="Hoe was je dag? Schrijf vrij..."></textarea>
+  </div>
+
+  <div class="section-label">Activiteiten</div>
+  <div class="card">
+    <textarea id="activities" rows="3" placeholder="Wat heb je vandaag gedaan?"></textarea>
+  </div>
+
+  <div class="section-label">Gewicht & Slaap</div>
+  <div class="card">
+    <label class="lbl">Gewicht (kg)</label>
+    <input type="number" id="weight" step="0.1" min="0" placeholder="bijv. 72.5" inputmode="decimal">
+  </div>
+
+  <div class="card">
+    <div class="sleep-grid">
+      <div>
+        <label class="lbl">Slaap tijd</label>
+        <input type="time" id="sleep-start" value="22:30" oninput="calcSleep()">
+      </div>
+      <div>
+        <label class="lbl">Wakker</label>
+        <input type="time" id="sleep-end" value="07:00" oninput="calcSleep()">
+      </div>
+    </div>
+    <div class="sleep-result">
+      <span>Totale slaap</span>
+      <strong id="sleep-total">8u 30m</strong>
+    </div>
+  </div>
+
+  <div class="section-label">Gewoontes</div>
+  <div class="card">
+    <div id="habit-list"></div>
+    <div class="add-habit-row">
+      <input type="text" id="new-habit" placeholder="Nieuwe gewoonte..." onkeydown="if(event.key==='Enter'){addHabit();this.blur();}">
+      <button class="btn btn-secondary" style="width:48px;padding:12px 0;font-size:1.1rem;" onclick="addHabit()">+</button>
+    </div>
+  </div>
+
+  <div style="height:8px;"></div>
+</div>
+
+<!-- HISTORY -->
+<div id="view-history" class="view">
+  <div class="section-label" style="margin-top:4px;">Alle dagen</div>
+  <div id="history-list"></div>
+  <div style="height:8px;"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-today" onclick="showView('today')">
+    <span class="nav-icon">📝</span>Vandaag
+  </button>
+  <button class="nav-item" id="nav-history" onclick="showView('history')">
+    <span class="nav-icon">📖</span>Geschiedenis
+  </button>
+</nav>
+
+<!-- SAVE ACTIONS (only for today) -->
+<div class="save-actions" id="save-actions">
+  <button class="btn btn-primary" onclick="saveEntry()">Opslaan ✓</button>
+  <button class="btn btn-secondary" onclick="clearToday()" title="Wissen">🗑</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ─────────────────────────────
+let currentDate = todayKey();
+let entries = JSON.parse(localStorage.getItem('myday_entries') || '{}');
+let habits = JSON.parse(localStorage.getItem('myday_habits') || '["Water drinken 💧","Sporten 🏃","Lezen 📚","Meditatie 🧘"]');
+let currentHabits = {};
+let selectedMood = '';
+let isDark = localStorage.getItem('myday_dark') === '1';
+
+const moodEmojis = {amazing:'🤩',good:'😊',okay:'😐',meh:'😔',bad:'😞',awful:'😩'};
+
+// ─── HELPERS ───────────────────────────
+function todayKey() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(key) {
+  const d = new Date(key + 'T12:00:00');
+  const today = todayKey();
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yKey = yesterday.toISOString().split('T')[0];
+  if (key === today) return 'Vandaag';
+  if (key === yKey) return 'Gisteren';
+  return d.toLocaleDateString('nl-BE', {weekday:'long', day:'numeric', month:'long'});
+}
+
+function formatDateShort(key) {
+  const d = new Date(key + 'T12:00:00');
+  return d.toLocaleDateString('nl-BE', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── THEME ─────────────────────────────
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('theme-color-meta').content = isDark ? '#1c1c1a' : '#ffffff';
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('myday_dark', isDark ? '1' : '0');
+  applyTheme();
+}
+
+// ─── DATE NAV ──────────────────────────
+function changeDate(delta) {
+  const d = new Date(currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  const newKey = d.toISOString().split('T')[0];
+  if (newKey > todayKey()) return;
+  currentDate = newKey;
+  loadEntry(currentDate);
+  updateUI();
+}
+
+function updateUI() {
+  const isToday = currentDate === todayKey();
+  document.getElementById('date-label').textContent = formatDate(currentDate);
+  document.getElementById('save-actions').style.display = (isToday && document.getElementById('view-today').classList.contains('active')) ? 'flex' : 'none';
+}
+
+// ─── VIEW SWITCHING ────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  const isToday = currentDate === todayKey();
+  document.getElementById('save-actions').style.display = (name === 'today' && isToday) ? 'flex' : 'none';
+  if (name === 'history') renderHistory();
+}
+
+// ─── MOOD ──────────────────────────────
+function selectMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = btn.dataset.mood;
+}
+
+// ─── SLEEP ─────────────────────────────
+function calcSleep() {
+  const s = document.getElementById('sleep-start').value;
+  const e = document.getElementById('sleep-end').value;
+  if (!s || !e) return;
+  let [sh,sm] = s.split(':').map(Number);
+  let [eh,em] = e.split(':').map(Number);
+  let mins = (eh*60+em)-(sh*60+sm);
+  if (mins < 0) mins += 1440;
+  document.getElementById('sleep-total').textContent = Math.floor(mins/60) + 'u ' + (mins%60) + 'm';
+}
+
+function getSleepStr(s, e) {
+  if (!s || !e) return null;
+  let [sh,sm] = s.split(':').map(Number);
+  let [eh,em] = e.split(':').map(Number);
+  let mins = (eh*60+em)-(sh*60+sm);
+  if (mins < 0) mins += 1440;
+  return Math.floor(mins/60) + 'u ' + (mins%60) + 'm';
+}
+
+// ─── HABITS ────────────────────────────
+function renderHabits() {
+  const list = document.getElementById('habit-list');
+  if (habits.length === 0) {
+    list.innerHTML = '<p style="font-size:0.85rem;color:var(--text2);padding:4px 0 10px;">Voeg je eerste gewoonte toe!</p>';
+    return;
+  }
+  list.innerHTML = habits.map(name => {
+    const done = currentHabits[name] || false;
+    const safe = name.replace(/'/g,"\\'");
+    return `<div class="habit-item${done?' done':''}" onclick="toggleHabit('${safe}')">
+      <div class="habit-check">${done?'✓':''}</div>
+      <span class="habit-name">${name}</span>
+      <button class="habit-del" onclick="event.stopPropagation();deleteHabit('${safe}')">×</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleHabit(name) {
+  currentHabits[name] = !currentHabits[name];
+  renderHabits();
+}
+
+function addHabit() {
+  const input = document.getElementById('new-habit');
+  const val = input.value.trim();
+  if (!val) return;
+  habits.push(val);
+  localStorage.setItem('myday_habits', JSON.stringify(habits));
+  input.value = '';
+  renderHabits();
+}
+
+function deleteHabit(name) {
+  habits = habits.filter(h => h !== name);
+  delete currentHabits[name];
+  localStorage.setItem('myday_habits', JSON.stringify(habits));
+  renderHabits();
+}
+
+// ─── SAVE / LOAD ───────────────────────
+function saveEntry() {
+  entries[currentDate] = {
+    mood: selectedMood,
+    journal: document.getElementById('journal').value,
+    activities: document.getElementById('activities').value,
+    weight: document.getElementById('weight').value,
+    sleepStart: document.getElementById('sleep-start').value,
+    sleepEnd: document.getElementById('sleep-end').value,
+    habits: { ...currentHabits },
+    savedAt: new Date().toISOString()
+  };
+  localStorage.setItem('myday_entries', JSON.stringify(entries));
+  showToast('✓ Opgeslagen!');
+}
+
+function loadEntry(key) {
+  selectedMood = '';
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('journal').value = '';
+  document.getElementById('activities').value = '';
+  document.getElementById('weight').value = '';
+  document.getElementById('sleep-start').value = '22:30';
+  document.getElementById('sleep-end').value = '07:00';
+  currentHabits = {};
+
+  const e = entries[key];
+  if (e) {
+    selectedMood = e.mood || '';
+    if (selectedMood) {
+      const b = document.querySelector(`.mood-btn[data-mood="${selectedMood}"]`);
+      if (b) b.classList.add('selected');
+    }
+    document.getElementById('journal').value = e.journal || '';
+    document.getElementById('activities').value = e.activities || '';
+    document.getElementById('weight').value = e.weight || '';
+    document.getElementById('sleep-start').value = e.sleepStart || '22:30';
+    document.getElementById('sleep-end').value = e.sleepEnd || '07:00';
+    currentHabits = { ...(e.habits || {}) };
+  }
+  calcSleep();
+  renderHabits();
+}
+
+function clearToday() {
+  if (!confirm('Wil je alle data van vandaag wissen?')) return;
+  selectedMood = '';
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('journal').value = '';
+  document.getElementById('activities').value = '';
+  document.getElementById('weight').value = '';
+  currentHabits = {};
+  renderHabits();
+  showToast('Gewist');
+}
+
+// ─── HISTORY ───────────────────────────
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const keys = Object.keys(entries).sort((a,b) => b.localeCompare(a));
+  if (keys.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="big">📖</div><p>Nog geen opgeslagen dagen.<br>Ga naar Vandaag om te beginnen!</p></div>`;
+    return;
+  }
+  list.innerHTML = keys.map(key => {
+    const e = entries[key];
+    const mood = e.mood ? moodEmojis[e.mood] : '';
+    const preview = (e.journal || e.activities || '').substring(0, 100) || 'Geen notities';
+    const chips = [];
+    if (e.weight) chips.push(`⚖️ ${e.weight} kg`);
+    const sleep = getSleepStr(e.sleepStart, e.sleepEnd);
+    if (sleep) chips.push(`🌙 ${sleep}`);
+    const done = Object.values(e.habits||{}).filter(Boolean).length;
+    const total = Object.keys(e.habits||{}).length;
+    if (total > 0) chips.push(`✅ ${done}/${total}`);
+
+    return `<div class="history-card" onclick="openEntry('${key}')">
+      <div class="history-top">
+        <span class="history-date-label">${formatDateShort(key)}</span>
+        <span style="font-size:1.3rem;">${mood}</span>
+      </div>
+      <div class="history-preview">${preview}</div>
+      ${chips.length ? `<div class="history-chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openEntry(key) {
+  currentDate = key;
+  loadEntry(key);
+  updateUI();
+  showView('today');
+}
+
+// ─── INIT ──────────────────────────────
+applyTheme();
+loadEntry(currentDate);
+updateUI();
+calcSleep();
+</script>
+</body>
+</html>
