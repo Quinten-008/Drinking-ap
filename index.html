@@ -5,806 +5,1377 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MyDay">
-<meta name="theme-color" content="#ffffff" id="theme-color-meta">
-<title>MyDay</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-title" content="Rounds">
+<meta name="theme-color" content="#0a0a0a">
+<title>Rounds 🍺</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --surface2: #f0efe9;
-    --border: #e4e2db;
-    --text: #1c1c1a;
-    --text2: #6b6962;
-    --accent: #2d6a4f;
-    --accent-soft: #e6f2ec;
-    --accent2: #52b788;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.07);
-    --shadow: 0 2px 12px rgba(0,0,0,0.07);
-    --radius: 16px;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --text: #f0ede8;
+  --text2: #888880;
+  --accent: #f5a623;
+  --accent2: #ff6b35;
+  --accent-soft: rgba(245,166,35,0.12);
+  --green: #4caf7d;
+  --red: #e05c5c;
+  --radius: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
 
-  [data-theme="dark"] {
-    --bg: #111110;
-    --surface: #1c1c1a;
-    --surface2: #252522;
-    --border: #2e2e2b;
-    --text: #f0efe9;
-    --text2: #8a8880;
-    --accent: #52b788;
-    --accent-soft: #1a2e23;
-    --accent2: #74c69d;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  overflow-x: hidden;
+}
 
-  html { scroll-behavior: smooth; }
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 15px;
-    line-height: 1.6;
-    transition: background 0.3s, color 0.3s;
-    padding-bottom: calc(80px + var(--safe-bottom));
-  }
+/* ── AUTH SCREEN ── */
+#screen-auth {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: calc(var(--safe-top) + 12px) 20px 12px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 20%, rgba(245,166,35,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(255,107,53,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
 
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.auth-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.auth-logo span { color: var(--accent); }
 
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .logo em { color: var(--accent); font-style: normal; }
+.auth-tagline {
+  color: var(--text2);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
 
-  .header-actions { display: flex; gap: 8px; align-items: center; }
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+}
 
-  .icon-btn {
-    width: 38px; height: 38px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.15s;
-    color: var(--text);
-  }
-  .icon-btn:active { background: var(--border); }
+.auth-tabs {
+  display: flex;
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
 
-  /* DATE STRIP */
-  .date-strip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
+.auth-tab {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: none;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.auth-tab.active { background: var(--accent); color: #000; }
 
-  .date-strip button {
-    width: 32px; height: 32px;
-    border: none;
-    background: none;
-    font-size: 1.3rem;
-    color: var(--text2);
-    cursor: pointer;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s;
-  }
-  .date-strip button:active { background: var(--border); }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
 
-  #date-label {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--text2);
-    text-align: center;
-    flex: 1;
-  }
+.field input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color 0.15s;
+}
+.field input:focus { outline: none; border-color: var(--accent); }
+.field input::placeholder { color: var(--text2); }
 
-  /* ── BOTTOM NAV ── */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 8px 0 calc(var(--safe-bottom) + 4px);
-    z-index: 100;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
+.btn {
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.15s;
+  width: 100%;
+}
+.btn:active { transform: scale(0.97); }
+.btn-accent { background: var(--accent); color: #000; }
+.btn-accent:hover { background: #f0b840; }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger { background: var(--red); color: white; }
+.btn-sm { padding: 8px 14px; font-size: 0.82rem; width: auto; }
 
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    padding: 6px 0;
-    cursor: pointer;
-    border: none;
-    background: none;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 500;
-    transition: color 0.15s;
-  }
-  .nav-item .nav-icon { font-size: 1.3rem; }
-  .nav-item.active { color: var(--accent); }
+.auth-error { color: var(--red); font-size: 0.82rem; margin-top: 10px; text-align: center; display: none; }
 
-  /* ── VIEWS ── */
-  .view { display: none; padding: 16px 16px 0; }
-  .view.active { display: block; }
+/* ── APP LAYOUT ── */
+#screen-app {
+  background: var(--bg);
+  padding-bottom: calc(70px + var(--safe-bottom));
+}
 
-  /* ── CARD ── */
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-  }
+/* ── HEADER ── */
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: calc(var(--safe-top) + 14px) 20px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
+.app-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.app-logo span { color: var(--accent); }
 
-  .card-icon {
-    width: 32px; height: 32px;
-    border-radius: 9px;
-    background: var(--accent-soft);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
+.header-right { display: flex; gap: 8px; align-items: center; }
 
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 600;
-  }
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #000;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 
-  /* ── MOOD ── */
-  .mood-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 calc(var(--safe-bottom) + 4px);
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 
-  .mood-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 12px 6px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface2);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    color: var(--text2);
-    font-weight: 500;
-    transition: all 0.15s;
-  }
-  .mood-btn .e { font-size: 1.6rem; line-height: 1; }
-  .mood-btn:active { transform: scale(0.95); }
-  .mood-btn.selected {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 0;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: color 0.15s;
+  position: relative;
+}
+.nav-btn .ni { font-size: 1.3rem; }
+.nav-btn.active { color: var(--accent); }
 
-  /* ── TEXTAREA ── */
-  textarea {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 13px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    resize: none;
-    background: var(--surface2);
-    color: var(--text);
-    line-height: 1.7;
-    transition: border-color 0.15s, background 0.3s;
-    -webkit-appearance: none;
-  }
-  textarea:focus { outline: none; border-color: var(--accent); background: var(--surface); }
-  textarea::placeholder { color: var(--text2); }
+.badge {
+  position: absolute;
+  top: 2px; right: calc(50% - 18px);
+  background: var(--accent);
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 16px; height: 16px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+}
 
-  /* ── INPUT ── */
-  input[type="number"], input[type="time"], input[type="text"] {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    background: var(--surface2);
-    color: var(--text);
-    transition: border-color 0.15s, background 0.3s;
-    -webkit-appearance: none;
-  }
-  input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
-  input::placeholder { color: var(--text2); }
+/* ── TABS / VIEWS ── */
+.tab-view { display: none; padding: 16px; }
+.tab-view.active { display: block; }
 
-  label.lbl {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 7px;
-  }
+/* ── SECTION LABEL ── */
+.slabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  margin: 0 0 10px;
+}
 
-  /* ── SLEEP ── */
-  .sleep-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
 
-  .sleep-result {
-    background: var(--accent-soft);
-    border-radius: 10px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .sleep-result span { font-size: 0.82rem; color: var(--text2); }
-  .sleep-result strong { font-size: 1.1rem; color: var(--accent); font-weight: 600; }
+/* ── EVENT CARD ── */
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  transition: border-color 0.15s;
+}
 
-  /* ── HABITS ── */
-  .habit-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: var(--surface2);
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-bottom: 8px;
-    user-select: none;
-  }
-  .habit-item:active { transform: scale(0.98); }
-  .habit-item.done { background: var(--accent-soft); border-color: var(--accent); }
+.event-header {
+  background: linear-gradient(135deg, rgba(245,166,35,0.15), rgba(255,107,53,0.08));
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
 
-  .habit-check {
-    width: 22px; height: 22px;
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-  .habit-item.done .habit-check {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
+.event-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
 
-  .habit-name { flex: 1; font-size: 0.93rem; }
-  .habit-del { background: none; border: none; color: var(--text2); font-size: 1.1rem; padding: 4px; cursor: pointer; }
+.event-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+.event-meta-item { font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 4px; }
+.event-meta-item strong { color: var(--text); }
 
-  .add-habit-row { display: flex; gap: 8px; margin-top: 4px; }
-  .add-habit-row input { flex: 1; }
+.event-body { padding: 16px; }
 
-  /* ── BUTTON ── */
-  .btn {
-    padding: 13px 20px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: all 0.15s;
-    -webkit-appearance: none;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
-  .btn-block { width: 100%; }
+.rsvp-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
 
-  /* ── SAVE ACTIONS ── */
-  .save-actions {
-    padding: 0 16px 16px;
-    display: flex;
-    gap: 10px;
-  }
-  .save-actions .btn-primary { flex: 1; }
-  .save-actions .btn-secondary { width: 48px; padding: 13px 0; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.rsvp-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.rsvp-btn:active { transform: scale(0.95); }
+.rsvp-btn.yes.active { background: var(--green); border-color: var(--green); color: white; }
+.rsvp-btn.no.active { background: var(--red); border-color: var(--red); color: white; }
+.rsvp-btn.maybe.active { background: var(--accent); border-color: var(--accent); color: #000; }
 
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    top: calc(var(--safe-top) + 80px);
-    left: 50%; transform: translateX(-50%) translateY(-10px);
-    background: var(--text);
-    color: var(--bg);
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    z-index: 999;
-    white-space: nowrap;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.attendees { display: flex; gap: -4px; align-items: center; }
+.att-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: 2px solid var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #000;
+  margin-left: -6px;
+}
+.att-avatar:first-child { margin-left: 0; }
+.att-count { font-size: 0.78rem; color: var(--text2); margin-left: 8px; }
 
-  /* ── HISTORY ── */
-  .history-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: border-color 0.15s;
-    box-shadow: var(--shadow-sm);
-  }
-  .history-card:active { border-color: var(--accent); }
+/* ── CREATE EVENT ── */
+.fab {
+  position: fixed;
+  bottom: calc(80px + var(--safe-bottom));
+  right: 20px;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(245,166,35,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 99;
+  transition: transform 0.15s;
+}
+.fab:active { transform: scale(0.92); }
 
-  .history-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
 
-  .history-date-label {
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
+.modal {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: calc(24px + var(--safe-bottom));
+  border: 1px solid var(--border);
+  border-bottom: none;
+  animation: slideUp 0.3s ease;
+}
 
-  .history-preview {
-    font-size: 0.83rem;
-    color: var(--text2);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.5;
-  }
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
-  .history-chips {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
+.modal-handle {
+  width: 40px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
 
-  .chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 0.75rem;
-    color: var(--text2);
-    font-weight: 500;
-  }
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text2);
-  }
-  .empty-state .big { font-size: 3rem; margin-bottom: 12px; }
-  .empty-state p { font-size: 0.9rem; line-height: 1.6; }
+/* ── CHAT ── */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 130px - var(--safe-bottom));
+}
 
-  /* ── SECTION LABEL ── */
-  .section-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text2);
-    margin: 20px 0 8px;
-    padding: 0 2px;
-  }
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  /* ── WEIGHT TREND ── */
-  .weight-display {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-top: 4px;
-  }
-  .weight-big { font-size: 2rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--accent); }
-  .weight-unit { font-size: 0.9rem; color: var(--text2); }
+.msg-group { display: flex; gap: 10px; align-items: flex-end; }
+.msg-group.mine { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.msg-bubble {
+  max-width: 70%;
+  background: var(--surface2);
+  border-radius: 18px 18px 18px 4px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+}
+.msg-group.mine .msg-bubble {
+  background: var(--accent);
+  color: #000;
+  border-radius: 18px 18px 4px 18px;
+  border-color: var(--accent);
+}
+
+.msg-name { font-size: 0.72rem; color: var(--text2); margin-bottom: 3px; font-weight: 600; }
+.msg-time { font-size: 0.68rem; color: var(--text2); margin-top: 3px; text-align: right; }
+.msg-group.mine .msg-time { color: rgba(0,0,0,0.5); }
+
+.chat-input-area {
+  padding: 12px 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 22px;
+  padding: 11px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.chat-input:focus { border-color: var(--accent); }
+.chat-input::placeholder { color: var(--text2); }
+
+.send-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.send-btn:active { transform: scale(0.9); }
+
+/* ── MAP ── */
+#map {
+  width: 100%;
+  height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.map-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text2);
+  font-size: 0.88rem;
+}
+.map-placeholder .map-icon { font-size: 2.5rem; }
+
+/* ── FRIENDS ── */
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 8px;
+}
+
+.friend-info { flex: 1; }
+.friend-name { font-weight: 600; font-size: 0.93rem; }
+.friend-email { font-size: 0.78rem; color: var(--text2); }
+
+.friend-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.status-pending { background: rgba(245,166,35,0.15); color: var(--accent); }
+.status-friend { background: rgba(76,175,125,0.15); color: var(--green); }
+
+/* ── PHOTOS ── */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.photo-thumb {
+  aspect-ratio: 1;
+  object-fit: cover;
+  width: 100%;
+  background: var(--surface2);
+  cursor: pointer;
+}
+
+.photo-upload-btn {
+  aspect-ratio: 1;
+  background: var(--surface2);
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--text2);
+  transition: border-color 0.15s;
+}
+.photo-upload-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: calc(var(--safe-top) + 80px);
+  left: 50%; transform: translateX(-50%) translateY(-10px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text2);
+}
+.empty .ei { font-size: 3rem; margin-bottom: 12px; }
+.empty p { font-size: 0.88rem; line-height: 1.6; }
+
+/* ── LOADING ── */
+.loading {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  z-index: 999;
+}
+.loading-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+.loading-logo span { color: var(--accent); }
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── PROFILE MODAL ── */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.profile-avatar {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #000;
+}
+.profile-name { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; }
+.profile-email { font-size: 0.82rem; color: var(--text2); margin-top: 2px; }
+
+/* ── SEARCH ── */
+.search-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px 12px 40px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 14px;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text2); }
+.search-wrap { position: relative; }
+.search-wrap::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-55%); font-size: 0.9rem; pointer-events: none; margin-bottom: 14px; }
+
+textarea.field-ta {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s;
+  line-height: 1.6;
+}
+textarea.field-ta:focus { border-color: var(--accent); }
+textarea.field-ta::placeholder { color: var(--text2); }
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+input[type="datetime-local"] {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text);
+  outline: none;
+  color-scheme: dark;
+}
+input[type="datetime-local"]:focus { border-color: var(--accent); }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-inner">
-    <div class="logo">my<em>day</em></div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Thema wisselen">🌙</button>
-    </div>
-  </div>
-  <div class="date-strip">
-    <button onclick="changeDate(-1)">‹</button>
-    <span id="date-label"></span>
-    <button onclick="changeDate(1)">›</button>
-  </div>
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="loading-logo">Rounds<span>.</span></div>
+  <div class="spinner"></div>
 </div>
 
-<!-- VIEWS -->
+<!-- AUTH SCREEN -->
+<div class="screen" id="screen-auth">
+  <div class="auth-bg"></div>
+  <div class="auth-logo">Rounds<span>.</span></div>
+  <div class="auth-tagline">Afspreken met je crew 🍺</div>
 
-<!-- TODAY -->
-<div id="view-today" class="view active">
-
-  <div class="section-label">Stemming</div>
-  <div class="card">
-    <div class="mood-grid" id="mood-picker">
-      <button class="mood-btn" data-mood="amazing" onclick="selectMood(this)"><span class="e">🤩</span>Geweldig</button>
-      <button class="mood-btn" data-mood="good" onclick="selectMood(this)"><span class="e">😊</span>Goed</button>
-      <button class="mood-btn" data-mood="okay" onclick="selectMood(this)"><span class="e">😐</span>Oké</button>
-      <button class="mood-btn" data-mood="meh" onclick="selectMood(this)"><span class="e">😔</span>Niet zo</button>
-      <button class="mood-btn" data-mood="bad" onclick="selectMood(this)"><span class="e">😞</span>Slecht</button>
-      <button class="mood-btn" data-mood="awful" onclick="selectMood(this)"><span class="e">😩</span>Afschuwelijk</button>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Inloggen</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Registreren</button>
     </div>
-  </div>
 
-  <div class="section-label">Dagboek</div>
-  <div class="card">
-    <textarea id="journal" rows="4" placeholder="Hoe was je dag? Schrijf vrij..."></textarea>
-  </div>
-
-  <div class="section-label">Activiteiten</div>
-  <div class="card">
-    <textarea id="activities" rows="3" placeholder="Wat heb je vandaag gedaan?"></textarea>
-  </div>
-
-  <div class="section-label">Gewicht & Slaap</div>
-  <div class="card">
-    <label class="lbl">Gewicht (kg)</label>
-    <input type="number" id="weight" step="0.1" min="0" placeholder="bijv. 72.5" inputmode="decimal">
-  </div>
-
-  <div class="card">
-    <div class="sleep-grid">
-      <div>
-        <label class="lbl">Slaap tijd</label>
-        <input type="time" id="sleep-start" value="22:30" oninput="calcSleep()">
+    <!-- LOGIN -->
+    <div id="auth-login">
+      <div class="field">
+        <label>E-mailadres</label>
+        <input type="email" id="login-email" placeholder="jij@email.com" autocomplete="email">
       </div>
-      <div>
-        <label class="lbl">Wakker</label>
-        <input type="time" id="sleep-end" value="07:00" oninput="calcSleep()">
+      <div class="field">
+        <label>Wachtwoord</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-accent" onclick="doLogin()">Inloggen →</button>
+      <div class="auth-error" id="login-error"></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="auth-register" style="display:none;">
+      <div class="field">
+        <label>Naam</label>
+        <input type="text" id="reg-name" placeholder="Quinten" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>E-mailadres</label>
+        <input type="email" id="reg-email" placeholder="jij@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Wachtwoord</label>
+        <input type="password" id="reg-pass" placeholder="Min. 6 tekens" autocomplete="new-password">
+      </div>
+      <button class="btn btn-accent" onclick="doRegister()">Account aanmaken →</button>
+      <div class="auth-error" id="reg-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div class="screen" id="screen-app">
+  <div class="app-header">
+    <div class="app-logo">Rounds<span>.</span></div>
+    <div class="header-right">
+      <div class="avatar" id="user-avatar" onclick="openProfile()">Q</div>
+    </div>
+  </div>
+
+  <!-- HOME TAB -->
+  <div class="tab-view active" id="tab-home">
+    <div style="margin-bottom:16px;">
+      <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:2px;">Hey <span id="greeting-name">daar</span> 👋</div>
+      <div style="font-size:0.85rem;color:var(--text2);">Wat staat er op de planning?</div>
+    </div>
+    <div class="slabel">Aankomende events</div>
+    <div id="events-list">
+      <div class="empty"><div class="ei">🍺</div><p>Nog geen events.<br>Maak er een aan met de + knop!</p></div>
+    </div>
+  </div>
+
+  <!-- CHAT TAB -->
+  <div class="tab-view" id="tab-chat">
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <div class="empty" style="margin:auto;"><div class="ei">💬</div><p>Begin de conversatie!</p></div>
+      </div>
+      <div class="chat-input-area">
+        <input class="chat-input" id="chat-input" placeholder="Stuur een bericht..." onkeydown="if(event.key==='Enter')sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
       </div>
     </div>
-    <div class="sleep-result">
-      <span>Totale slaap</span>
-      <strong id="sleep-total">8u 30m</strong>
+  </div>
+
+  <!-- MAP TAB -->
+  <div class="tab-view" id="tab-map">
+    <div class="slabel">Meeting point</div>
+    <div id="map">
+      <div class="map-placeholder">
+        <div class="map-icon">📍</div>
+        <div>Stel een meeting point in</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="slabel" style="margin-bottom:8px;">Locatie instellen</div>
+      <div class="field">
+        <label>Naam van de locatie</label>
+        <input type="text" id="location-name" placeholder="bijv. Café De Kroon, Mechelen">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div class="field" style="margin:0;">
+          <label>Breedtegraad</label>
+          <input type="number" id="location-lat" placeholder="51.0259" step="0.0001">
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Lengtegraad</label>
+          <input type="number" id="location-lng" placeholder="4.4776" step="0.0001">
+        </div>
+      </div>
+      <button class="btn btn-accent" onclick="saveLocation()">📍 Locatie opslaan</button>
+    </div>
+    <div id="saved-location-card" style="display:none;" class="card">
+      <div class="slabel">Huidig meeting point</div>
+      <div style="font-weight:600;font-size:1rem;" id="saved-loc-name"></div>
+      <div style="font-size:0.82rem;color:var(--text2);margin-top:4px;" id="saved-loc-coords"></div>
+      <div style="margin-top:12px;">
+        <a id="maps-link" href="#" target="_blank" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;">🗺️ Open in Maps</a>
+      </div>
     </div>
   </div>
 
-  <div class="section-label">Gewoontes</div>
-  <div class="card">
-    <div id="habit-list"></div>
-    <div class="add-habit-row">
-      <input type="text" id="new-habit" placeholder="Nieuwe gewoonte..." onkeydown="if(event.key==='Enter'){addHabit();this.blur();}">
-      <button class="btn btn-secondary" style="width:48px;padding:12px 0;font-size:1.1rem;" onclick="addHabit()">+</button>
+  <!-- VRIENDEN TAB -->
+  <div class="tab-view" id="tab-friends">
+    <div class="slabel">Vrienden zoeken</div>
+    <div class="search-wrap">
+      <input class="search-input" id="friend-search" placeholder="Zoek op e-mailadres..." type="email">
+    </div>
+    <button class="btn btn-accent" style="margin-bottom:20px;" onclick="searchFriend()">Vriend zoeken</button>
+
+    <div class="slabel">Mijn vrienden</div>
+    <div id="friends-list">
+      <div class="empty"><div class="ei">👥</div><p>Nog geen vrienden.<br>Zoek ze op via e-mailadres!</p></div>
+    </div>
+
+    <div id="friend-requests-section" style="display:none;">
+      <div class="divider"></div>
+      <div class="slabel">Vriendschapsverzoeken</div>
+      <div id="friend-requests-list"></div>
     </div>
   </div>
 
-  <div style="height:8px;"></div>
+  <!-- FOTOS TAB -->
+  <div class="tab-view" id="tab-photos">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="slabel" style="margin:0;">Gedeelde foto's</div>
+      <label style="cursor:pointer;">
+        <input type="file" accept="image/*" id="photo-upload" style="display:none;" onchange="uploadPhoto(this)">
+        <span class="btn btn-accent btn-sm">+ Foto toevoegen</span>
+      </label>
+    </div>
+    <div class="photo-grid" id="photo-grid">
+    </div>
+    <div id="photos-empty" class="empty"><div class="ei">📸</div><p>Nog geen foto's gedeeld.</p></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="switchTab('home')"><span class="ni">🏠</span>Home</button>
+    <button class="nav-btn" id="nav-chat" onclick="switchTab('chat')"><span class="ni">💬</span>Chat<span class="badge" id="chat-badge" style="display:none;">0</span></button>
+    <button class="nav-btn" id="nav-map" onclick="switchTab('map')"><span class="ni">📍</span>Map</button>
+    <button class="nav-btn" id="nav-friends" onclick="switchTab('friends')"><span class="ni">👥</span>Vrienden</button>
+    <button class="nav-btn" id="nav-photos" onclick="switchTab('photos')"><span class="ni">📸</span>Foto's</button>
+  </nav>
 </div>
 
-<!-- HISTORY -->
-<div id="view-history" class="view">
-  <div class="section-label" style="margin-top:4px;">Alle dagen</div>
-  <div id="history-list"></div>
-  <div style="height:8px;"></div>
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openCreateEvent()" style="display:none;">+</button>
+
+<!-- CREATE EVENT MODAL -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🍺 Nieuw event aanmaken</div>
+    <div class="field">
+      <label>Event naam</label>
+      <input type="text" id="ev-name" placeholder="bijv. Vrijdagavond uit!">
+    </div>
+    <div class="field">
+      <label>Datum & tijd</label>
+      <input type="datetime-local" id="ev-date">
+    </div>
+    <div class="field">
+      <label>Locatie</label>
+      <input type="text" id="ev-location" placeholder="bijv. Café De Kroon, Mechelen">
+    </div>
+    <div class="field">
+      <label>Beschrijving</label>
+      <textarea class="field-ta" id="ev-desc" rows="3" placeholder="Vertel wat meer over het event..."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-ghost" onclick="closeModal('modal-event')">Annuleren</button>
+      <button class="btn btn-accent" style="flex:1;" onclick="createEvent()">Event aanmaken 🎉</button>
+    </div>
+  </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-item active" id="nav-today" onclick="showView('today')">
-    <span class="nav-icon">📝</span>Vandaag
-  </button>
-  <button class="nav-item" id="nav-history" onclick="showView('history')">
-    <span class="nav-icon">📖</span>Geschiedenis
-  </button>
-</nav>
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profile-avatar-big">Q</div>
+      <div>
+        <div class="profile-name" id="profile-name-big">Quinten</div>
+        <div class="profile-email" id="profile-email-big">quinten@email.com</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <button class="btn btn-danger" onclick="doLogout()">Uitloggen</button>
+  </div>
+</div>
 
-<!-- SAVE ACTIONS (only for today) -->
-<div class="save-actions" id="save-actions">
-  <button class="btn btn-primary" onclick="saveEntry()">Opslaan ✓</button>
-  <button class="btn btn-secondary" onclick="clearToday()" title="Wissen">🗑</button>
+<!-- PHOTO VIEWER -->
+<div class="modal-overlay" id="modal-photo">
+  <div style="padding:20px;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <img id="photo-viewer-img" src="" style="max-width:100%;max-height:70vh;border-radius:12px;">
+    <button class="btn btn-ghost" style="width:auto;padding:10px 24px;" onclick="closeModal('modal-photo')">Sluiten</button>
+  </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-// ─── STATE ─────────────────────────────
-let currentDate = todayKey();
-let entries = JSON.parse(localStorage.getItem('myday_entries') || '{}');
-let habits = JSON.parse(localStorage.getItem('myday_habits') || '["Water drinken 💧","Sporten 🏃","Lezen 📚","Meditatie 🧘"]');
-let currentHabits = {};
-let selectedMood = '';
-let isDark = localStorage.getItem('myday_dark') === '1';
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, serverTimestamp, doc, setDoc, getDoc, updateDoc, arrayUnion, where } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
-const moodEmojis = {amazing:'🤩',good:'😊',okay:'😐',meh:'😔',bad:'😞',awful:'😩'};
+const firebaseConfig = {
+  apiKey: "AIzaSyB79_lT_UeSj3WZgGUjl6FJsugK-Oa-dFM",
+  authDomain: "drinking-ap.firebaseapp.com",
+  projectId: "drinking-ap",
+  storageBucket: "drinking-ap.firebasestorage.app",
+  messagingSenderId: "869345427783",
+  appId: "1:869345427783:web:4db013a00017054e2c4c62"
+};
 
-// ─── HELPERS ───────────────────────────
-function todayKey() {
-  return new Date().toISOString().split('T')[0];
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-function formatDate(key) {
-  const d = new Date(key + 'T12:00:00');
-  const today = todayKey();
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yKey = yesterday.toISOString().split('T')[0];
-  if (key === today) return 'Vandaag';
-  if (key === yKey) return 'Gisteren';
-  return d.toLocaleDateString('nl-BE', {weekday:'long', day:'numeric', month:'long'});
-}
+let currentUser = null;
+let currentUserData = null;
+let unsubChat = null;
+let unsubEvents = null;
+let lastMsgCount = 0;
 
-function formatDateShort(key) {
-  const d = new Date(key + 'T12:00:00');
-  return d.toLocaleDateString('nl-BE', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
-}
-
+// ── HELPERS ──
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ─── THEME ─────────────────────────────
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
-  document.getElementById('theme-color-meta').content = isDark ? '#1c1c1a' : '#ffffff';
+function getInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
 }
 
-function toggleTheme() {
-  isDark = !isDark;
-  localStorage.setItem('myday_dark', isDark ? '1' : '0');
-  applyTheme();
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
 }
 
-// ─── DATE NAV ──────────────────────────
-function changeDate(delta) {
-  const d = new Date(currentDate + 'T12:00:00');
-  d.setDate(d.getDate() + delta);
-  const newKey = d.toISOString().split('T')[0];
-  if (newKey > todayKey()) return;
-  currentDate = newKey;
-  loadEntry(currentDate);
-  updateUI();
+function formatDateTime(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('nl-BE', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
-function updateUI() {
-  const isToday = currentDate === todayKey();
-  document.getElementById('date-label').textContent = formatDate(currentDate);
-  document.getElementById('save-actions').style.display = (isToday && document.getElementById('view-today').classList.contains('active')) ? 'flex' : 'none';
+// ── AUTH ──
+window.switchAuthTab = (tab) => {
+  document.querySelectorAll('.auth-tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+};
+
+window.doLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  err.style.display = 'none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch (e) {
+    err.style.display = 'block';
+    err.textContent = e.code === 'auth/invalid-credential' ? 'Ongeldig e-mailadres of wachtwoord.' : 'Fout: ' + e.message;
+  }
+};
+
+window.doRegister = async () => {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const err = document.getElementById('reg-error');
+  err.style.display = 'none';
+  if (!name) { err.style.display = 'block'; err.textContent = 'Vul je naam in.'; return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email, uid: cred.user.uid, friends: [], createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    err.style.display = 'block';
+    err.textContent = e.code === 'auth/email-already-in-use' ? 'Dit e-mailadres is al in gebruik.' : 'Fout: ' + e.message;
+  }
+};
+
+window.doLogout = async () => {
+  await signOut(auth);
+  closeModal('modal-profile');
+};
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async (user) => {
+  document.getElementById('loading').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    // load user data
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) currentUserData = snap.data();
+    // show app
+    document.getElementById('screen-auth').classList.remove('active');
+    document.getElementById('screen-app').classList.add('active');
+    document.getElementById('fab').style.display = 'flex';
+    // update UI
+    const initials = getInitials(user.displayName);
+    document.getElementById('user-avatar').textContent = initials;
+    document.getElementById('greeting-name').textContent = user.displayName?.split(' ')[0] || 'daar';
+    document.getElementById('profile-avatar-big').textContent = initials;
+    document.getElementById('profile-name-big').textContent = user.displayName || '';
+    document.getElementById('profile-email-big').textContent = user.email || '';
+    // start listeners
+    startChatListener();
+    startEventsListener();
+    loadFriends();
+    loadPhotos();
+    loadLocation();
+  } else {
+    currentUser = null;
+    document.getElementById('screen-app').classList.remove('active');
+    document.getElementById('screen-auth').classList.add('active');
+    document.getElementById('fab').style.display = 'none';
+    if (unsubChat) unsubChat();
+    if (unsubEvents) unsubEvents();
+  }
+});
+
+// ── TABS ──
+window.switchTab = (tab) => {
+  document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'chat') {
+    document.getElementById('chat-badge').style.display = 'none';
+    lastMsgCount = 0;
+    setTimeout(() => {
+      const msgs = document.getElementById('chat-messages');
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 100);
+  }
+  if (tab === 'friends') loadFriends();
+  if (tab === 'photos') loadPhotos();
+};
+
+// ── MODALS ──
+window.openProfile = () => document.getElementById('modal-profile').classList.add('open');
+window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+window.openCreateEvent = () => {
+  // set default datetime to now+1h
+  const d = new Date(Date.now() + 3600000);
+  d.setMinutes(0);
+  document.getElementById('ev-date').value = d.toISOString().slice(0, 16);
+  document.getElementById('modal-event').classList.add('open');
+};
+
+// close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ── EVENTS ──
+window.createEvent = async () => {
+  const name = document.getElementById('ev-name').value.trim();
+  const date = document.getElementById('ev-date').value;
+  const location = document.getElementById('ev-location').value.trim();
+  const desc = document.getElementById('ev-desc').value.trim();
+  if (!name || !date) { showToast('Vul minstens een naam en datum in!'); return; }
+  try {
+    await addDoc(collection(db, 'events'), {
+      name, date: new Date(date), location, description: desc,
+      createdBy: currentUser.uid, createdByName: currentUser.displayName,
+      rsvps: {}, createdAt: serverTimestamp()
+    });
+    closeModal('modal-event');
+    document.getElementById('ev-name').value = '';
+    document.getElementById('ev-location').value = '';
+    document.getElementById('ev-desc').value = '';
+    showToast('🎉 Event aangemaakt!');
+  } catch (e) { showToast('Fout: ' + e.message); }
+};
+
+function startEventsListener() {
+  const q = query(collection(db, 'events'), orderBy('date', 'asc'));
+  unsubEvents = onSnapshot(q, (snap) => {
+    const events = [];
+    snap.forEach(d => events.push({ id: d.id, ...d.data() }));
+    renderEvents(events);
+  });
 }
 
-// ─── VIEW SWITCHING ────────────────────
-function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  const isToday = currentDate === todayKey();
-  document.getElementById('save-actions').style.display = (name === 'today' && isToday) ? 'flex' : 'none';
-  if (name === 'history') renderHistory();
-}
-
-// ─── MOOD ──────────────────────────────
-function selectMood(btn) {
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedMood = btn.dataset.mood;
-}
-
-// ─── SLEEP ─────────────────────────────
-function calcSleep() {
-  const s = document.getElementById('sleep-start').value;
-  const e = document.getElementById('sleep-end').value;
-  if (!s || !e) return;
-  let [sh,sm] = s.split(':').map(Number);
-  let [eh,em] = e.split(':').map(Number);
-  let mins = (eh*60+em)-(sh*60+sm);
-  if (mins < 0) mins += 1440;
-  document.getElementById('sleep-total').textContent = Math.floor(mins/60) + 'u ' + (mins%60) + 'm';
-}
-
-function getSleepStr(s, e) {
-  if (!s || !e) return null;
-  let [sh,sm] = s.split(':').map(Number);
-  let [eh,em] = e.split(':').map(Number);
-  let mins = (eh*60+em)-(sh*60+sm);
-  if (mins < 0) mins += 1440;
-  return Math.floor(mins/60) + 'u ' + (mins%60) + 'm';
-}
-
-// ─── HABITS ────────────────────────────
-function renderHabits() {
-  const list = document.getElementById('habit-list');
-  if (habits.length === 0) {
-    list.innerHTML = '<p style="font-size:0.85rem;color:var(--text2);padding:4px 0 10px;">Voeg je eerste gewoonte toe!</p>';
+function renderEvents(events) {
+  const container = document.getElementById('events-list');
+  if (events.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="ei">🍺</div><p>Nog geen events.<br>Maak er een aan met de + knop!</p></div>';
     return;
   }
-  list.innerHTML = habits.map(name => {
-    const done = currentHabits[name] || false;
-    const safe = name.replace(/'/g,"\\'");
-    return `<div class="habit-item${done?' done':''}" onclick="toggleHabit('${safe}')">
-      <div class="habit-check">${done?'✓':''}</div>
-      <span class="habit-name">${name}</span>
-      <button class="habit-del" onclick="event.stopPropagation();deleteHabit('${safe}')">×</button>
-    </div>`;
-  }).join('');
-}
-
-function toggleHabit(name) {
-  currentHabits[name] = !currentHabits[name];
-  renderHabits();
-}
-
-function addHabit() {
-  const input = document.getElementById('new-habit');
-  const val = input.value.trim();
-  if (!val) return;
-  habits.push(val);
-  localStorage.setItem('myday_habits', JSON.stringify(habits));
-  input.value = '';
-  renderHabits();
-}
-
-function deleteHabit(name) {
-  habits = habits.filter(h => h !== name);
-  delete currentHabits[name];
-  localStorage.setItem('myday_habits', JSON.stringify(habits));
-  renderHabits();
-}
-
-// ─── SAVE / LOAD ───────────────────────
-function saveEntry() {
-  entries[currentDate] = {
-    mood: selectedMood,
-    journal: document.getElementById('journal').value,
-    activities: document.getElementById('activities').value,
-    weight: document.getElementById('weight').value,
-    sleepStart: document.getElementById('sleep-start').value,
-    sleepEnd: document.getElementById('sleep-end').value,
-    habits: { ...currentHabits },
-    savedAt: new Date().toISOString()
-  };
-  localStorage.setItem('myday_entries', JSON.stringify(entries));
-  showToast('✓ Opgeslagen!');
-}
-
-function loadEntry(key) {
-  selectedMood = '';
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('journal').value = '';
-  document.getElementById('activities').value = '';
-  document.getElementById('weight').value = '';
-  document.getElementById('sleep-start').value = '22:30';
-  document.getElementById('sleep-end').value = '07:00';
-  currentHabits = {};
-
-  const e = entries[key];
-  if (e) {
-    selectedMood = e.mood || '';
-    if (selectedMood) {
-      const b = document.querySelector(`.mood-btn[data-mood="${selectedMood}"]`);
-      if (b) b.classList.add('selected');
-    }
-    document.getElementById('journal').value = e.journal || '';
-    document.getElementById('activities').value = e.activities || '';
-    document.getElementById('weight').value = e.weight || '';
-    document.getElementById('sleep-start').value = e.sleepStart || '22:30';
-    document.getElementById('sleep-end').value = e.sleepEnd || '07:00';
-    currentHabits = { ...(e.habits || {}) };
-  }
-  calcSleep();
-  renderHabits();
-}
-
-function clearToday() {
-  if (!confirm('Wil je alle data van vandaag wissen?')) return;
-  selectedMood = '';
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-  document.getElementById('journal').value = '';
-  document.getElementById('activities').value = '';
-  document.getElementById('weight').value = '';
-  currentHabits = {};
-  renderHabits();
-  showToast('Gewist');
-}
-
-// ─── HISTORY ───────────────────────────
-function renderHistory() {
-  const list = document.getElementById('history-list');
-  const keys = Object.keys(entries).sort((a,b) => b.localeCompare(a));
-  if (keys.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="big">📖</div><p>Nog geen opgeslagen dagen.<br>Ga naar Vandaag om te beginnen!</p></div>`;
-    return;
-  }
-  list.innerHTML = keys.map(key => {
-    const e = entries[key];
-    const mood = e.mood ? moodEmojis[e.mood] : '';
-    const preview = (e.journal || e.activities || '').substring(0, 100) || 'Geen notities';
-    const chips = [];
-    if (e.weight) chips.push(`⚖️ ${e.weight} kg`);
-    const sleep = getSleepStr(e.sleepStart, e.sleepEnd);
-    if (sleep) chips.push(`🌙 ${sleep}`);
-    const done = Object.values(e.habits||{}).filter(Boolean).length;
-    const total = Object.keys(e.habits||{}).length;
-    if (total > 0) chips.push(`✅ ${done}/${total}`);
-
-    return `<div class="history-card" onclick="openEntry('${key}')">
-      <div class="history-top">
-        <span class="history-date-label">${formatDateShort(key)}</span>
-        <span style="font-size:1.3rem;">${mood}</span>
+  container.innerHTML = events.map(ev => {
+    const rsvps = ev.rsvps || {};
+    const myRsvp = rsvps[currentUser?.uid];
+    const yesCount = Object.values(rsvps).filter(r => r === 'yes').length;
+    const dateStr = ev.date?.toDate ? ev.date.toDate().toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : '';
+    return `<div class="event-card">
+      <div class="event-header">
+        <div class="event-title">${ev.name}</div>
+        <div class="event-meta">
+          ${dateStr ? `<div class="event-meta-item">📅 <strong>${dateStr}</strong></div>` : ''}
+          ${ev.location ? `<div class="event-meta-item">📍 <strong>${ev.location}</strong></div>` : ''}
+          <div class="event-meta-item">✅ <strong>${yesCount} aanwezig</strong></div>
+        </div>
       </div>
-      <div class="history-preview">${preview}</div>
-      ${chips.length ? `<div class="history-chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>` : ''}
+      <div class="event-body">
+        ${ev.description ? `<p style="font-size:0.88rem;color:var(--text2);margin-bottom:12px;">${ev.description}</p>` : ''}
+        <div class="rsvp-row">
+          <button class="rsvp-btn yes ${myRsvp === 'yes' ? 'active' : ''}" onclick="setRsvp('${ev.id}','yes')">✅ Ik kom</button>
+          <button class="rsvp-btn maybe ${myRsvp === 'maybe' ? 'active' : ''}" onclick="setRsvp('${ev.id}','maybe')">🤔 Misschien</button>
+          <button class="rsvp-btn no ${myRsvp === 'no' ? 'active' : ''}" onclick="setRsvp('${ev.id}','no')">❌ Kan niet</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+          <span style="font-size:0.78rem;color:var(--text2);">Aangemaakt door ${ev.createdByName || 'onbekend'}</span>
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
 
-function openEntry(key) {
-  currentDate = key;
-  loadEntry(key);
-  updateUI();
-  showView('today');
+window.setRsvp = async (eventId, status) => {
+  if (!currentUser) return;
+  try {
+    await updateDoc(doc(db, 'events', eventId), {
+      [`rsvps.${currentUser.uid}`]: status
+    });
+    showToast(status === 'yes' ? '✅ Je bent erbij!' : status === 'maybe' ? '🤔 Misschien...' : '❌ Jammer!');
+  } catch (e) { showToast('Fout: ' + e.message); }
+};
+
+// ── CHAT ──
+function startChatListener() {
+  const q = query(collection(db, 'messages'), orderBy('createdAt', 'asc'));
+  unsubChat = onSnapshot(q, (snap) => {
+    const msgs = [];
+    snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
+    renderMessages(msgs);
+    // badge
+    if (msgs.length > lastMsgCount && lastMsgCount > 0) {
+      const activeTab = document.querySelector('.tab-view.active');
+      if (!activeTab || activeTab.id !== 'tab-chat') {
+        const newCount = msgs.length - lastMsgCount;
+        const badge = document.getElementById('chat-badge');
+        badge.textContent = newCount;
+        badge.style.display = 'flex';
+      }
+    }
+    lastMsgCount = msgs.length;
+  });
 }
 
-// ─── INIT ──────────────────────────────
-applyTheme();
-loadEntry(currentDate);
-updateUI();
-calcSleep();
+function renderMessages(msgs) {
+  const container = document.getElementById('chat-messages');
+  if (msgs.length === 0) {
+    container.innerHTML = '<div class="empty" style="margin:auto;"><div class="ei">💬</div><p>Begin de conversatie!</p></div>';
+    return;
+  }
+  container.innerHTML = msgs.map(msg => {
+    const isMine = msg.uid === currentUser?.uid;
+    const initials = getInitials(msg.name);
+    return `<div class="msg-group ${isMine ? 'mine' : ''}">
+      ${!isMine ? `<div class="msg-avatar">${initials}</div>` : ''}
+      <div>
+        ${!isMine ? `<div class="msg-name">${msg.name}</div>` : ''}
+        <div class="msg-bubble">${msg.text}</div>
+        <div class="msg-time">${formatTime(msg.createdAt)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+window.sendMessage = async () => {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text || !currentUser) return;
+  input.value = '';
+  try {
+    await addDoc(collection(db, 'messages'), {
+      text, uid: currentUser.uid, name: currentUser.displayName || 'Onbekend',
+      createdAt: serverTimestamp()
+    });
+  } catch (e) { showToast('Fout: ' + e.message); }
+};
+
+// ── MAP / LOCATION ──
+window.saveLocation = async () => {
+  const name = document.getElementById('location-name').value.trim();
+  const lat = parseFloat(document.getElementById('location-lat').value);
+  const lng = parseFloat(document.getElementById('location-lng').value);
+  if (!name) { showToast('Vul een naam in voor de locatie!'); return; }
+  try {
+    await setDoc(doc(db, 'settings', 'meetingpoint'), { name, lat: lat || 51.0259, lng: lng || 4.4776, updatedBy: currentUser.displayName, updatedAt: serverTimestamp() });
+    showToast('📍 Locatie opgeslagen!');
+    loadLocation();
+  } catch (e) { showToast('Fout: ' + e.message); }
+};
+
+async function loadLocation() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'meetingpoint'));
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById('saved-location-card').style.display = 'block';
+      document.getElementById('saved-loc-name').textContent = d.name;
+      document.getElementById('saved-loc-coords').textContent = `${d.lat?.toFixed(4)}, ${d.lng?.toFixed(4)} — ingesteld door ${d.updatedBy || 'onbekend'}`;
+      document.getElementById('maps-link').href = `https://maps.google.com/?q=${d.lat},${d.lng}`;
+      // render simple map embed
+      document.getElementById('map').innerHTML = `<iframe 
+        src="https://www.openstreetmap.org/export/embed.html?bbox=${d.lng-0.01},${d.lat-0.01},${d.lng+0.01},${d.lat+0.01}&layer=mapnik&marker=${d.lat},${d.lng}"
+        style="width:100%;height:100%;border:0;border-radius:14px;" loading="lazy"></iframe>`;
+    }
+  } catch (e) {}
+}
+
+// ── FRIENDS ──
+window.searchFriend = async () => {
+  const email = document.getElementById('friend-search').value.trim().toLowerCase();
+  if (!email) { showToast('Vul een e-mailadres in!'); return; }
+  if (email === currentUser.email.toLowerCase()) { showToast('Dat ben jijzelf 😄'); return; }
+  try {
+    const q = query(collection(db, 'users'), where('email', '==', email));
+    const snap = await getDocs(q);
+    if (snap.empty) { showToast('Geen gebruiker gevonden met dit e-mailadres.'); return; }
+    const friendDoc = snap.docs[0];
+    const friendData = friendDoc.data();
+    // send friend request
+    await setDoc(doc(db, 'friendRequests', `${currentUser.uid}_${friendDoc.id}`), {
+      from: currentUser.uid, fromName: currentUser.displayName, fromEmail: currentUser.email,
+      to: friendDoc.id, toName: friendData.name, toEmail: friendData.email,
+      status: 'pending', createdAt: serverTimestamp()
+    });
+    document.getElementById('friend-search').value = '';
+    showToast(`✉️ Vriendschapsverzoek verstuurd naar ${friendData.name}!`);
+  } catch (e) { showToast('Fout: ' + e.message); }
+};
+
+async function loadFriends() {
+  if (!currentUser) return;
+  try {
+    // load accepted friends
+    const q1 = query(collection(db, 'friendRequests'), where('from', '==', currentUser.uid), where('status', '==', 'accepted'));
+    const q2 = query(collection(db, 'friendRequests'), where('to', '==', currentUser.uid), where('status', '==', 'accepted'));
+    const [s1, s2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+    const friends = [];
+    s1.forEach(d => { const data = d.data(); friends.push({ name: data.toName, email: data.toEmail }); });
+    s2.forEach(d => { const data = d.data(); friends.push({ name: data.fromName, email: data.fromEmail }); });
+
+    const container = document.getElementById('friends-list');
+    if (friends.length === 0) {
+      container.innerHTML = '<div class="empty"><div class="ei">👥</div><p>Nog geen vrienden.<br>Zoek ze op via e-mailadres!</p></div>';
+    } else {
+      container.innerHTML = friends.map(f => `
+        <div class="friend-item">
+          <div class="avatar" style="width:38px;height:38px;font-size:0.8rem;">${getInitials(f.name)}</div>
+          <div class="friend-info">
+            <div class="friend-name">${f.name}</div>
+            <div class="friend-email">${f.email}</div>
+          </div>
+          <span class="friend-status status-friend">Vriend ✓</span>
+        </div>`).join('');
+    }
+
+    // load pending requests TO me
+    const qReq = query(collection(db, 'friendRequests'), where('to', '==', currentUser.uid), where('status', '==', 'pending'));
+    const reqSnap = await getDocs(qReq);
+    const reqSection = document.getElementById('friend-requests-section');
+    const reqList = document.getElementById('friend-requests-list');
+    if (!reqSnap.empty) {
+      reqSection.style.display = 'block';
+      reqList.innerHTML = '';
+      reqSnap.forEach(d => {
+        const data = d.data();
+        const div = document.createElement('div');
+        div.className = 'friend-item';
+        div.innerHTML = `
+          <div class="avatar" style="width:38px;height:38px;font-size:0.8rem;">${getInitials(data.fromName)}</div>
+          <div class="friend-info">
+            <div class="friend-name">${data.fromName}</div>
+            <div class="friend-email">${data.fromEmail}</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-accent btn-sm" onclick="acceptFriend('${d.id}')">✓</button>
+            <button class="btn btn-ghost btn-sm" onclick="declineFriend('${d.id}')">✗</button>
+          </div>`;
+        reqList.appendChild(div);
+      });
+    } else { reqSection.style.display = 'none'; }
+  } catch (e) {}
+}
+
+window.acceptFriend = async (reqId) => {
+  await updateDoc(doc(db, 'friendRequests', reqId), { status: 'accepted' });
+  showToast('🎉 Vriend toegevoegd!');
+  loadFriends();
+};
+
+window.declineFriend = async (reqId) => {
+  await updateDoc(doc(db, 'friendRequests', reqId), { status: 'declined' });
+  loadFriends();
+};
+
+// ── PHOTOS ──
+window.uploadPhoto = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+  showToast('⏳ Foto uploaden...');
+  try {
+    // store as base64 in Firestore (fallback if Storage fails)
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      await addDoc(collection(db, 'photos'), {
+        url: e.target.result,
+        uploadedBy: currentUser.displayName,
+        uid: currentUser.uid,
+        createdAt: serverTimestamp()
+      });
+      showToast('📸 Foto gedeeld!');
+      loadPhotos();
+    };
+    reader.readAsDataURL(file);
+  } catch (e) { showToast('Fout: ' + e.message); }
+  input.value = '';
+};
+
+async function loadPhotos() {
+  if (!currentUser) return;
+  try {
+    const q = query(collection(db, 'photos'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    const grid = document.getElementById('photo-grid');
+    const empty = document.getElementById('photos-empty');
+    if (snap.empty) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.innerHTML = '';
+    snap.forEach(d => {
+      const data = d.data();
+      const img = document.createElement('img');
+      img.className = 'photo-thumb';
+      img.src = data.url;
+      img.alt = 'Foto';
+      img.onclick = () => viewPhoto(data.url);
+      grid.appendChild(img);
+    });
+  } catch (e) {}
+}
+
+window.viewPhoto = (url) => {
+  document.getElementById('photo-viewer-img').src = url;
+  document.getElementById('modal-photo').classList.add('open');
+};
+
 </script>
 </body>
 </html>
