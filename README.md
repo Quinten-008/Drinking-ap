@@ -44,7 +44,7 @@ Rounds is een web-app gebouwd voor vrienden die samen willen afspreken. Je maakt
 De app is live op:
 
 ```
-https://quinten-008.github.io/Drinking-ap
+https://quinten-008.github.io/Rounds
 ```
 
 Open de link op je iPhone in **Safari** → tik op het deelicoon → **"Zet op beginscherm"** om het als app te installeren.
@@ -55,7 +55,7 @@ Open de link op je iPhone in **Safari** → tik op het deelicoon → **"Zet op b
 
 1. Clone de repo:
 ```bash
-git clone https://github.com/Quinten-008/Drinking-ap.git
+git clone https://github.com/Quinten-008/Rounds.git
 ```
 
 2. Open `index.html` in je browser — dat is alles! Geen installatie nodig.
