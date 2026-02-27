@@ -861,14 +861,22 @@ window.submitEvent = async () => {
 function startEvents() {
   if (unsubEvs) unsubEvs();
   unsubEvs = onSnapshot(collection(db, 'events'), snap => {
+    const friendUids = myFriends.map(f => f.uid);
+    const allowedUids = [me.uid, ...friendUids];
     const evs = [];
-    snap.forEach(d => evs.push({ id: d.id, ...d.data() }));
+    snap.forEach(d => {
+      const data = d.data();
+      // Toon alleen events van jezelf of je vrienden
+      if (allowedUids.includes(data.createdBy)) {
+        evs.push({ id: d.id, ...data });
+      }
+    });
     evs.sort((a, b) => {
       const da = a.date?.toDate ? a.date.toDate() : new Date(0);
       const db2 = b.date?.toDate ? b.date.toDate() : new Date(0);
       return da - db2;
     });
-    latestEvents = evs; // cache for map tab
+    latestEvents = evs;
     renderEvents(evs);
   }, e => { console.error('Events error:', e.message); });
 }
@@ -1431,14 +1439,25 @@ window.uploadPhoto = inp => {
 async function loadPhotos() {
   if (!me) return;
   try {
-    // No orderBy to avoid index requirement - sort client-side
     const snap = await getDocs(collection(db,'photos'));
     const grid = G('photogrid'), empty = G('phoempty');
-    if (snap.empty) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
     grid.innerHTML = '';
+
+    const friendUids = myFriends.map(f => f.uid);
+    const allowedUids = [me.uid, ...friendUids];
+
     const photos = [];
-    snap.forEach(d => photos.push({ id: d.id, ...d.data() }));
+    snap.forEach(d => {
+      const data = d.data();
+      // Toon alleen media van jezelf of vrienden
+      if (allowedUids.includes(data.uid)) {
+        photos.push({ id: d.id, ...data });
+      }
+    });
+
+    if (!photos.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
     photos.sort((a, b) => {
       const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
       const tb = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
