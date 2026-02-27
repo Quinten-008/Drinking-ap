@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -338,24 +337,58 @@ input[type="datetime-local"].inp{color-scheme:dark}
   </nav>
 </div>
 
-<button class="fab" id="fab" onclick="openModal('moev')">+</button>
+<!-- FAB goes to event create page -->
+<button class="fab" id="fab" onclick="openEventPage()">+</button>
 
-<!-- CREATE EVENT MODAL -->
-<div class="ov" id="moev">
-  <div class="sh">
-    <div class="hn"></div>
-    <div class="mt">🍺 Nieuw event aanmaken</div>
-    <div class="iw"><label class="fl">Naam *</label><input class="inp" id="evname" placeholder="bijv. Vrijdagavond uit!"></div>
-    <div class="iw"><label class="fl">Datum & tijd *</label><input class="inp" type="datetime-local" id="evdate"></div>
-    <div class="iw"><label class="fl">Straat & huisnummer</label><input class="inp" id="evstreet" placeholder="bijv. Grote Markt 1"></div>
-    <div class="iw"><label class="fl">Stad</label><input class="inp" id="evcity" placeholder="bijv. Mechelen"></div>
-    <div class="iw"><label class="fl">Naam locatie (optioneel)</label><input class="inp" id="evloc" placeholder="bijv. Café De Kroon"></div>
-    <div class="iw"><label class="fl">Beschrijving (optioneel)</label><textarea class="inp" id="evdesc" rows="3" placeholder="Meer info..."></textarea></div>
-    <div style="display:flex;gap:8px;margin-top:4px">
-      <button class="btn bg_" style="flex:0 0 auto" onclick="closeModal('moev')">Annuleren</button>
-      <button class="btn ba" id="evsubmitbtn" style="flex:1" onclick="createEvent()">Event aanmaken 🎉</button>
-    </div>
+<!-- FULL SCREEN EVENT CREATE PAGE -->
+<div id="evpage" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:300;overflow-y:auto;padding:calc(var(--st) + 16px) 18px calc(var(--sb) + 24px);">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <button onclick="closeEventPage()" style="background:var(--surf2);border:1px solid var(--brd);color:var(--tx);width:38px;height:38px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">‹</button>
+    <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;">Nieuw event</div>
   </div>
+
+  <div id="evpage-err" style="display:none;background:var(--rd-d);border:1px solid rgba(239,68,68,.4);color:var(--rd);border-radius:12px;padding:12px 14px;font-size:.87rem;margin-bottom:16px;"></div>
+
+  <div style="margin-bottom:14px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Naam *</label>
+    <input id="ep-name" type="text" placeholder="bijv. Vrijdagavond uit!"
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Datum & tijd *</label>
+    <input id="ep-date" type="datetime-local"
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;color-scheme:dark;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Locatie naam</label>
+    <input id="ep-loc" type="text" placeholder="bijv. Café De Kroon"
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Straat & nr</label>
+    <input id="ep-street" type="text" placeholder="bijv. Grote Markt 1"
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Stad</label>
+    <input id="ep-city" type="text" placeholder="bijv. Mechelen"
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;">
+  </div>
+
+  <div style="margin-bottom:28px;">
+    <label style="display:block;font-size:.72rem;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Beschrijving</label>
+    <textarea id="ep-desc" rows="4" placeholder="Meer info over het event..."
+      style="width:100%;background:var(--surf);border:1.5px solid var(--brd);border-radius:13px;padding:13px 15px;font-family:'Outfit',sans-serif;font-size:1rem;color:var(--tx);outline:none;resize:none;line-height:1.6;"></textarea>
+  </div>
+
+  <button id="ep-btn" onclick="submitEvent()"
+    style="width:100%;background:var(--am);color:#000;border:none;border-radius:13px;padding:16px;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;transition:opacity .15s;">
+    🎉 Event aanmaken
+  </button>
 </div>
 
 <!-- NEW GROUP MODAL -->
@@ -494,6 +527,12 @@ onAuthStateChanged(auth, async user => {
     G('fab').classList.add('show');
     G('sa').classList.remove('on');
     G('sap').classList.add('on');
+    // Test Firestore write access
+    try {
+      await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', uid: user.uid, lastSeen: serverTimestamp() }, { merge: true });
+    } catch(e) {
+      setTimeout(() => showToast('⚠️ Firebase regels blokkeren schrijven! Publiceer de regels opnieuw.', 6000), 1000);
+    }
     await loadFriends();
     startEvents();
     startRooms();
@@ -523,59 +562,86 @@ window.goTab = tab => {
 };
 
 /* ══════════════════════════════════════
-   EVENTS
+   EVENT CREATE PAGE
 ══════════════════════════════════════ */
-window.createEvent = async () => {
-  const name    = G('evname').value.trim();
-  const dateVal = G('evdate').value;
-  const street  = G('evstreet').value.trim();
-  const city    = G('evcity').value.trim();
-  const locName = G('evloc').value.trim();
-  const desc    = G('evdesc').value.trim();
+window.openEventPage = () => {
+  // Set default date to 1 hour from now
+  const d = new Date(Date.now() + 3600000);
+  d.setSeconds(0, 0);
+  const pad = n => String(n).padStart(2, '0');
+  const local = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  document.getElementById('ep-date').value = local;
+  document.getElementById('ep-name').value = '';
+  document.getElementById('ep-loc').value = '';
+  document.getElementById('ep-street').value = '';
+  document.getElementById('ep-city').value = '';
+  document.getElementById('ep-desc').value = '';
+  document.getElementById('evpage-err').style.display = 'none';
+  document.getElementById('ep-btn').disabled = false;
+  document.getElementById('ep-btn').textContent = '🎉 Event aanmaken';
+  document.getElementById('evpage').style.display = 'block';
+  document.getElementById('ep-name').focus();
+};
 
-  if (!name) { showToast('❌ Vul een naam in!'); return; }
-  if (!dateVal) { showToast('❌ Kies een datum en tijd!'); return; }
+window.closeEventPage = () => {
+  document.getElementById('evpage').style.display = 'none';
+};
+
+window.submitEvent = async () => {
+  const nameVal   = document.getElementById('ep-name').value.trim();
+  const dateVal   = document.getElementById('ep-date').value;
+  const locVal    = document.getElementById('ep-loc').value.trim();
+  const streetVal = document.getElementById('ep-street').value.trim();
+  const cityVal   = document.getElementById('ep-city').value.trim();
+  const descVal   = document.getElementById('ep-desc').value.trim();
+  const errEl     = document.getElementById('evpage-err');
+  const btn       = document.getElementById('ep-btn');
+
+  const showErr = msg => {
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+    errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  errEl.style.display = 'none';
+
+  if (!nameVal) { showErr('❌ Vul een naam in voor het event!'); return; }
+  if (!dateVal)  { showErr('❌ Kies een datum en tijd!'); return; }
 
   const dateObj = new Date(dateVal);
-  if (isNaN(dateObj.getTime())) { showToast('❌ Ongeldige datum!'); return; }
+  if (isNaN(dateObj.getTime())) { showErr('❌ Ongeldige datum!'); return; }
 
-  // Build location string
   let locationStr = '';
-  if (locName && street && city) locationStr = `${locName}, ${street}, ${city}`;
-  else if (locName && city) locationStr = `${locName}, ${city}`;
-  else if (street && city) locationStr = `${street}, ${city}`;
-  else if (locName) locationStr = locName;
+  if (locVal && streetVal && cityVal)   locationStr = `${locVal} — ${streetVal}, ${cityVal}`;
+  else if (locVal && cityVal)           locationStr = `${locVal}, ${cityVal}`;
+  else if (streetVal && cityVal)        locationStr = `${streetVal}, ${cityVal}`;
+  else if (locVal)                      locationStr = locVal;
+  else if (cityVal)                     locationStr = cityVal;
 
-  const btn = G('evsubmitbtn');
   btn.disabled = true;
   btn.textContent = '⏳ Bezig...';
 
   try {
-    await addDoc(collection(db, 'events'), {
-      name,
-      date: dateObj,
-      location: locationStr,
-      description: desc,
-      createdBy: me.uid,
+    const eventsRef = collection(db, 'events');
+    const newDoc = await addDoc(eventsRef, {
+      name:          nameVal,
+      date:          dateObj,
+      location:      locationStr,
+      description:   descVal,
+      createdBy:     me.uid,
       createdByName: me.displayName || 'Onbekend',
-      rsvps: {},
-      createdAt: serverTimestamp()
+      rsvps:         {},
+      createdAt:     serverTimestamp()
     });
-    // clear form
-    G('evname').value = '';
-    G('evdate').value = '';
-    G('evstreet').value = '';
-    G('evcity').value = '';
-    G('evloc').value = '';
-    G('evdesc').value = '';
-    closeModal('moev');
+
+    console.log('Event created:', newDoc.id);
+    window.closeEventPage();
     showToast('🎉 Event aangemaakt!');
   } catch(e) {
-    showToast('❌ Fout: ' + e.message);
-    console.error('createEvent error:', e);
-  } finally {
+    console.error('submitEvent FAILED:', e.code, e.message);
+    showErr(`❌ ${e.message}`);
     btn.disabled = false;
-    btn.textContent = 'Event aanmaken 🎉';
+    btn.textContent = '🎉 Event aanmaken';
   }
 };
 
