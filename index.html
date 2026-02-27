@@ -214,9 +214,111 @@ input[type="datetime-local"].inp{color-scheme:dark}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(min-width:600px){.tv,.ah{max-width:600px;margin-left:auto;margin-right:auto}.bn{justify-content:center}.nb{max-width:80px}}
+
+/* BADGES */
+.bdg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.bdg-item{background:var(--surf2);border:1.5px solid var(--brd);border-radius:var(--rl);padding:12px 8px;text-align:center;position:relative;transition:border-color .15s}
+.bdg-item.earned{border-color:var(--am);background:var(--am-d)}
+.bdg-item.earned .bdg-lock{display:none}
+.bdg-item:not(.earned) .bdg-icon{filter:grayscale(1);opacity:.3}
+.bdg-icon{font-size:1.8rem;display:block;margin-bottom:4px}
+.bdg-name{font-size:.69rem;font-weight:700;color:var(--tx2)}
+.bdg-item.earned .bdg-name{color:var(--am)}
+.bdg-lock{position:absolute;top:6px;right:8px;font-size:.7rem;color:var(--tx3)}
+.chal-item{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.chal-icon{font-size:1.5rem;flex-shrink:0}
+.chal-info{flex:1}
+.chal-name{font-weight:600;font-size:.88rem}
+.chal-desc{font-size:.76rem;color:var(--tx2);margin-top:2px}
+.chal-prog{height:5px;background:var(--brd);border-radius:3px;margin-top:6px;overflow:hidden}
+.chal-prog-bar{height:100%;background:var(--am);border-radius:3px;transition:width .5s}
+
+/* REACTIONS */
+.react-bar{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.react-btn{background:var(--surf2);border:1px solid var(--brd);border-radius:20px;padding:2px 7px;font-size:.73rem;cursor:pointer;transition:all .12s;display:inline-flex;align-items:center;gap:2px;color:var(--tx2)}
+.react-btn.mine{background:var(--am-d);border-color:var(--am);color:var(--am)}
+.react-btn:active{transform:scale(.9)}
+.react-picker{position:absolute;bottom:calc(100% + 4px);left:0;background:var(--surf3);border:1px solid var(--brd2);border-radius:20px;padding:4px 8px;display:none;gap:4px;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.react-picker.open{display:flex}
+.react-pick-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:2px;border-radius:8px;transition:transform .1s}
+.react-pick-btn:active{transform:scale(1.3)}
+.mr{position:relative}
+
+/* EVENT COUNTDOWN & CHAT */
+.ev-countdown{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;color:var(--am);background:var(--am-d);border:1px solid var(--am-g);border-radius:8px;padding:4px 10px;display:inline-block;margin-top:6px}
+.ev-chat-btn{margin-top:8px}
+
+/* LIVE LOCATION */
+.loc-dot{width:10px;height:10px;border-radius:50%;background:var(--gn);box-shadow:0 0 0 0 rgba(34,197,94,.4);animation:pulse-loc 1.5s infinite;display:inline-block;margin-right:4px}
+@keyframes pulse-loc{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.loc-item{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.loc-name{font-weight:600;font-size:.88rem;flex:1}
+.loc-coords{font-size:.73rem;color:var(--tx2)}
+
+/* PUSH NOTIFICATION BANNER */
+.pnb{position:fixed;top:calc(var(--st) + 8px);left:8px;right:8px;max-width:420px;margin:0 auto;background:var(--surf3);border:1px solid var(--brd2);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:9997;box-shadow:0 8px 32px rgba(0,0,0,.6);transform:translateY(-120%);transition:transform .3s cubic-bezier(.32,.72,0,1);cursor:pointer}
+.pnb.show{transform:translateY(0)}
+.pnb-icon{font-size:1.4rem;flex-shrink:0}
+.pnb-body{flex:1;min-width:0}
+.pnb-title{font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnb-msg{font-size:.75rem;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.pnb-close{color:var(--tx3);font-size:1rem;flex-shrink:0;background:none;border:none;cursor:pointer;padding:2px}
+
+/* PROFILE PHOTO */
+.prof-av-wrap{position:relative;cursor:pointer}
+.prof-av-wrap:hover::after{content:'✏️';position:absolute;bottom:-2px;right:-2px;font-size:.75rem;background:var(--surf2);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--brd)}
+.prof-av img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+
+/* UNREAD BADGE */
+.unread-dot{width:8px;height:8px;border-radius:50%;background:var(--am);flex-shrink:0}
+.crn-wrap{display:flex;align-items:center;gap:5px}
+.unread-count{background:var(--am);color:#000;font-size:.63rem;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;flex-shrink:0}
+
+/* RSVP LIST MODAL */
+.rsvp-user{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)}
+.rsvp-user:last-child{border-bottom:none}
+.rsvp-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--am),var(--or));display:flex;align-items:center;justify-content:center;font-size:.73rem;font-weight:800;color:#000;flex-shrink:0}
+.rsvp-nm{flex:1;font-size:.88rem;font-weight:600}
+.rsvp-status{font-size:.8rem}
+
+/* VIDEO */
+.pcell video{width:100%;height:100%;object-fit:cover}
+.media-type-badge{position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,.7);color:white;font-size:.6rem;padding:1px 5px;border-radius:4px;font-weight:700}
+
+/* COPYRIGHT */
+.copy-footer{text-align:center;padding:8px 16px calc(10px + var(--sb));font-size:.65rem;color:var(--tx3);letter-spacing:.03em}
+
+/* DELETE BUTTON ON EVENTS */
+.ev-del-btn{background:none;border:none;color:var(--tx3);font-size:.75rem;cursor:pointer;padding:2px 6px;border-radius:6px;transition:color .12s;margin-left:auto}
+.ev-del-btn:hover{color:var(--rd)}
+
+/* FRIEND-ONLY WALL */
+#friendwall{display:none;position:fixed;inset:0;background:var(--bg);z-index:8000;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center}
+#friendwall.show{display:flex}
+.fw-icon{font-size:3.5rem;margin-bottom:16px}
+.fw-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:8px}
+.fw-sub{font-size:.88rem;color:var(--tx2);line-height:1.7;margin-bottom:24px}
 </style>
 </head>
 <body>
+
+<!-- PUSH NOTIFICATION BANNER -->
+<div class="pnb" id="pnbanner" onclick="pnClick()">
+  <div class="pnb-icon" id="pnicon">💬</div>
+  <div class="pnb-body">
+    <div class="pnb-title" id="pntitle">Nieuw bericht</div>
+    <div class="pnb-msg" id="pnmsg"></div>
+  </div>
+  <button class="pnb-close" onclick="event.stopPropagation();hidePNB()">✕</button>
+</div>
+
+<!-- FRIEND WALL (shown to strangers) -->
+<div id="friendwall">
+  <div class="fw-icon">🔒</div>
+  <div class="fw-title">Besloten crew</div>
+  <div class="fw-sub">Deze app is alleen voor mensen die door een lid zijn uitgenodigd. Vraag een vriend om je toe te voegen via je e-mailadres!</div>
+  <button class="btn ba" onclick="doLogout()">Uitloggen</button>
+</div>
 
 <!-- LOADING -->
 <div id="ld"><div class="ll">Rounds<b>.</b></div><div class="sp"></div></div>
@@ -262,6 +364,14 @@ input[type="datetime-local"].inp{color-scheme:dark}
     <div class="ps">Wat staat er op de planning?</div>
     <div class="sl">Aankomende events</div>
     <div id="evl"><div class="empty"><div class="ei">🍺</div><p>Nog geen events.<br>Tik + om er een aan te maken!</p></div></div>
+    <div class="dv"></div>
+    <div class="sl">Live locaties 📡</div>
+    <div id="liveloc-list"><div style="font-size:.8rem;color:var(--tx2);padding:8px 0">Niemand deelt momenteel een locatie.</div></div>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="btn bg_ bsm" id="shareloc-btn" onclick="toggleShareLocation()">📍 Locatie delen</button>
+      <button class="btn br_ bsm" id="stoploc-btn" style="display:none" onclick="stopShareLocation()">✕ Stop delen</button>
+    </div>
+    <div class="copy-footer">© Quinten De Smet 2026</div>
   </div>
 
   <!-- CHAT -->
@@ -321,11 +431,11 @@ input[type="datetime-local"].inp{color-scheme:dark}
   <!-- PHOTOS -->
   <div class="tv" id="tv-photos">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div><div class="pt">Foto's</div><div class="ps" style="margin:0">Gedeeld door de crew</div></div>
-      <label style="cursor:pointer"><input type="file" accept="image/*" id="phoinput" style="display:none" onchange="uploadPhoto(this)"><span class="btn ba bsm">+ Foto</span></label>
+      <div><div class="pt">Media</div><div class="ps" style="margin:0">Foto's & video's van de crew</div></div>
+      <label style="cursor:pointer"><input type="file" accept="image/*,video/*" id="phoinput" style="display:none" onchange="uploadPhoto(this)"><span class="btn ba bsm">+ Media</span></label>
     </div>
     <div class="pgrid" id="photogrid"></div>
-    <div id="phoempty" class="empty"><div class="ei">📸</div><p>Nog geen foto's.<br>Voeg de eerste toe!</p></div>
+    <div id="phoempty" class="empty"><div class="ei">📸</div><p>Nog geen media.<br>Voeg de eerste toe!</p></div>
   </div>
 
   <nav class="bn">
@@ -333,7 +443,7 @@ input[type="datetime-local"].inp{color-scheme:dark}
     <button class="nb" id="nb-chat" onclick="goTab('chat')"><span class="ic">💬</span>Chat<span class="nbd" id="chatbadge" style="display:none">0</span></button>
     <button class="nb" id="nb-map" onclick="goTab('map')"><span class="ic">📍</span>Map</button>
     <button class="nb" id="nb-friends" onclick="goTab('friends')"><span class="ic">👥</span>Vrienden</button>
-    <button class="nb" id="nb-photos" onclick="goTab('photos')"><span class="ic">📸</span>Foto's</button>
+    <button class="nb" id="nb-photos" onclick="goTab('photos')"><span class="ic">📸</span>Media</button>
   </nav>
 </div>
 
@@ -414,11 +524,22 @@ input[type="datetime-local"].inp{color-scheme:dark}
   <div class="sh">
     <div class="hn"></div>
     <div class="prof-hdr">
-      <div class="prof-av" id="profav">?</div>
-      <div><div class="prof-nm" id="profnm"></div><div class="prof-em" id="profem"></div></div>
+      <div class="prof-av-wrap" onclick="G('profphoinp').click()">
+        <div class="prof-av" id="profav">?</div>
+        <input type="file" accept="image/*" id="profphoinp" style="display:none" onchange="uploadProfilePhoto(this)">
+      </div>
+      <div>
+        <div class="prof-nm" id="profnm"></div>
+        <div class="prof-em" id="profem"></div>
+        <div style="font-size:.72rem;color:var(--tx3);margin-top:3px">Tik op foto om te wijzigen</div>
+      </div>
     </div>
+    <div class="sl" style="margin-top:12px">Mijn badges 🏆</div>
+    <div class="bdg-grid" id="prof-badges"></div>
     <div class="dv"></div>
-    <button class="btn br_ bw" onclick="doLogout()">Uitloggen</button>
+    <button class="btn bg_ bw" style="margin-bottom:8px" onclick="openModal('mochallenges');closeModal('moprof')">🎯 Challenges bekijken</button>
+    <button class="btn ba bw" style="margin-bottom:8px" onclick="doLogout()">Uitloggen</button>
+    <button class="btn br_ bw" onclick="confirmDeleteAccount()">🗑 Account verwijderen</button>
   </div>
 </div>
 
@@ -427,18 +548,55 @@ input[type="datetime-local"].inp{color-scheme:dark}
   <img id="photobig" src="" style="max-width:100%;max-height:80dvh;border-radius:var(--rl);box-shadow:0 16px 48px rgba(0,0,0,.8)">
 </div>
 
+<!-- CHALLENGES MODAL -->
+<div class="ov" id="mochallenges">
+  <div class="sh">
+    <div class="hn"></div>
+    <div class="mt">🎯 Challenges & Badges</div>
+    <div id="challenges-list"></div>
+  </div>
+</div>
+
+<!-- RSVP LIST MODAL -->
+<div class="ov" id="morsvp">
+  <div class="sh">
+    <div class="hn"></div>
+    <div class="mt" id="rsvp-modal-title">Aanwezigheid</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="btn bsm" id="rsvp-tab-yes" onclick="showRsvpTab('yes')" style="background:var(--gn-d);color:var(--gn);border:1.5px solid rgba(34,197,94,.3)">✅ Komen <span id="rsvp-yes-count">0</span></button>
+      <button class="btn bsm" id="rsvp-tab-maybe" onclick="showRsvpTab('maybe')" style="background:var(--am-d);color:var(--am);border:1.5px solid var(--am-g)">🤔 Misschien <span id="rsvp-maybe-count">0</span></button>
+      <button class="btn bsm" id="rsvp-tab-no" onclick="showRsvpTab('no')" style="background:var(--rd-d);color:var(--rd);border:1.5px solid rgba(239,68,68,.25)">❌ Niet <span id="rsvp-no-count">0</span></button>
+    </div>
+    <div id="rsvp-modal-list"></div>
+  </div>
+</div>
+
+<!-- EVENT CHAT MODAL -->
+<div class="ov" id="moevtchat">
+  <div class="sh" style="max-height:85dvh;display:flex;flex-direction:column">
+    <div class="hn"></div>
+    <div class="mt" id="evtchat-title">Event Chat</div>
+    <div id="evtchat-msgs" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;min-height:120px;max-height:320px;padding:4px 0"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input class="cinp" id="evtchat-inp" placeholder="Typ een bericht..." style="flex:1">
+      <button class="sndbtn" onclick="sendEvtChatMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, setPersistence, browserLocalPersistence
+  signOut, onAuthStateChanged, updateProfile, setPersistence, browserLocalPersistence,
+  deleteUser, EmailAuthProvider, reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, getDocs, deleteDoc,
   onSnapshot, query, orderBy, serverTimestamp,
-  doc, setDoc, getDoc, updateDoc, where
+  doc, setDoc, getDoc, updateDoc, where, limit
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 /* ── INIT ── */
@@ -462,6 +620,14 @@ let unsubRoom = null;
 let unsubEvs = null;
 let unsubRooms = null;
 let selMembers = [];
+let locWatchId = null;
+let unsubEvtChat = null;
+let activeEvtChatId = null;
+let currentRsvpEvData = null;
+let currentRsvpTab = 'yes';
+let pnbTimeout = null;
+let unsubLiveLoc = null;
+let myBadges = [];
 
 /* ── HELPERS ── */
 const G = id => document.getElementById(id);
@@ -518,16 +684,51 @@ onAuthStateChanged(auth, async user => {
   G('ld').style.display = 'none';
   if (user) {
     me = user;
+
+    // ── FRIEND-ONLY GATE ──
+    // Check if user is the "owner" (has at least one accepted friend or created events)
+    // Allow access if: user has friends OR is creator of at least one event OR user doc is old enough
+    const userSnap = await getDoc(doc(db,'users',user.uid));
+    const userData = userSnap.exists() ? userSnap.data() : null;
+
+    // Check if new stranger: no friends yet AND account is very new (< 10 min old)
+    const isNewAccount = userData?.createdAt ? (Date.now() - userData.createdAt.toDate().getTime() < 600000) : false;
+    // Check if they have any friend connections
+    const [fr1, fr2] = await Promise.all([
+      getDocs(query(collection(db,'friendRequests'), where('from','==',user.uid), where('status','==','accepted'), limit(1))),
+      getDocs(query(collection(db,'friendRequests'), where('to','==',user.uid), where('status','==','accepted'), limit(1)))
+    ]);
+    const hasFriends = !fr1.empty || !fr2.empty;
+    // Check if they have pending friend requests (were invited)
+    const hasPending = await getDocs(query(collection(db,'friendRequests'), where('to','==',user.uid), where('status','==','pending'), limit(1)));
+    const wasInvited = !hasPending.empty;
+
+    // Block pure strangers (new account, no friends, no invites)
+    if (isNewAccount && !hasFriends && !wasInvited) {
+      G('friendwall').classList.add('show');
+      G('sa').classList.remove('on');
+      G('sap').classList.remove('on');
+      G('fab').classList.remove('show');
+      return;
+    }
+    G('friendwall').classList.remove('show');
+
+    const profilePhoto = userData?.photoURL || null;
     const i = ini(user.displayName);
-    G('hav').textContent = i;
-    G('profav').textContent = i;
+    G('hav').innerHTML = profilePhoto ? `<img src="${profilePhoto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : i;
+    // Update profav
+    const profAvEl = G('profav');
+    if (profilePhoto) {
+      profAvEl.innerHTML = `<img src="${profilePhoto}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    } else {
+      profAvEl.textContent = i;
+    }
     G('profnm').textContent = user.displayName || '';
     G('profem').textContent = user.email || '';
     G('greet').textContent = `Hey ${user.displayName?.split(' ')[0] || 'daar'} 👋`;
     G('fab').classList.add('show');
     G('sa').classList.remove('on');
     G('sap').classList.add('on');
-    // Test Firestore write access
     try {
       await setDoc(doc(db, 'users', user.uid), { name: user.displayName || '', email: user.email || '', uid: user.uid, lastSeen: serverTimestamp() }, { merge: true });
     } catch(e) {
@@ -537,14 +738,20 @@ onAuthStateChanged(auth, async user => {
     startEvents();
     startRooms();
     loadPhotos();
+    loadBadges();
+    startLiveLocations();
+    requestNotificationPermission();
   } else {
     me = null; myFriends = [];
     G('sap').classList.remove('on');
     G('sa').classList.add('on');
     G('fab').classList.remove('show');
-    if (unsubRoom) { unsubRoom(); unsubRoom = null; }
-    if (unsubEvs)  { unsubEvs();  unsubEvs  = null; }
-    if (unsubRooms){ unsubRooms(); unsubRooms = null; }
+    G('friendwall').classList.remove('show');
+    if (unsubRoom)   { unsubRoom();   unsubRoom   = null; }
+    if (unsubEvs)    { unsubEvs();    unsubEvs    = null; }
+    if (unsubRooms)  { unsubRooms();  unsubRooms  = null; }
+    if (unsubLiveLoc){ unsubLiveLoc(); unsubLiveLoc = null; }
+    if (locWatchId !== null) { navigator.geolocation.clearWatch(locWatchId); locWatchId = null; }
   }
 });
 
@@ -670,15 +877,22 @@ function renderEvents(evs) {
     const rsvps = ev.rsvps || {};
     const myR   = rsvps[me?.uid] || '';
     const yesC  = Object.values(rsvps).filter(x => x === 'yes').length;
+    const mayC  = Object.values(rsvps).filter(x => x === 'maybe').length;
     const dateStr = ev.date?.toDate ? fdt(ev.date) : '';
+    const countdown = ev.date?.toDate ? getCountdown(ev.date.toDate()) : '';
+    const canDelete = ev.createdBy === me?.uid;
     return `<div class="evc">
       <div class="evh">
-        <div class="evn">${ev.name}</div>
+        <div style="display:flex;align-items:flex-start">
+          <div style="flex:1"><div class="evn">${ev.name}</div></div>
+          ${canDelete ? `<button class="ev-del-btn" onclick="deleteEvent('${ev.id}')">🗑</button>` : ''}
+        </div>
         <div class="evcs">
           ${dateStr ? `<span class="evch">📅 ${dateStr}</span>` : ''}
           ${ev.location ? `<span class="evch">📍 ${ev.location}</span>` : ''}
-          <span class="evch">✅ ${yesC} komen</span>
+          <span class="evch" style="cursor:pointer" onclick="openRsvpModal('${ev.id}')" title="Klik voor lijst">✅ <u>${yesC} komen</u>${mayC ? ` · 🤔 ${mayC}` : ''}</span>
         </div>
+        ${countdown ? `<div class="ev-countdown">⏱ ${countdown}</div>` : ''}
       </div>
       <div class="evb">
         ${ev.description ? `<div class="evdesc">${ev.description}</div>` : ''}
@@ -687,10 +901,22 @@ function renderEvents(evs) {
           <button class="rv maybe ${myR==='maybe'?'on':''}" onclick="rsvp('${ev.id}','maybe')">🤔 Misschien</button>
           <button class="rv no ${myR==='no'?'on':''}" onclick="rsvp('${ev.id}','no')">❌ Kan niet</button>
         </div>
-        <div class="evby">Door ${ev.createdByName || 'onbekend'}</div>
+        <button class="btn bg_ bsm ev-chat-btn" onclick="openEvtChat('${ev.id}','${ev.name.replace(/'/g,"\\'")}')">💬 Event chat</button>
+        <div class="evby" style="margin-top:8px">Door ${ev.createdByName || 'onbekend'}</div>
       </div>
     </div>`;
   }).join('');
+}
+
+function getCountdown(date) {
+  const diff = date - Date.now();
+  if (diff <= 0) return 'Bezig! 🎉';
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (d > 0) return `Nog ${d}d ${h}u`;
+  if (h > 0) return `Nog ${h}u ${m}min`;
+  return `Nog ${m} minuten!`;
 }
 
 window.rsvp = async (evId, status) => {
@@ -706,18 +932,35 @@ window.rsvp = async (evId, status) => {
 ══════════════════════════════════════ */
 function startRooms() {
   if (unsubRooms) unsubRooms();
-  // Listen to all rooms where I'm a member - no composite index needed
+  let firstLoad = true;
+  let prevLastMsgs = {};
   unsubRooms = onSnapshot(
     query(collection(db,'rooms'), where('members','array-contains', me.uid)),
     snap => {
       const rooms = [];
       snap.forEach(d => rooms.push({ id: d.id, ...d.data() }));
-      // sort client-side: most recent first
       rooms.sort((a, b) => {
         const ta = a.lastAt?.toDate ? a.lastAt.toDate() : new Date(0);
         const tb = b.lastAt?.toDate ? b.lastAt.toDate() : new Date(0);
         return tb - ta;
       });
+
+      if (!firstLoad) {
+        // Check for new messages from others
+        rooms.forEach(r => {
+          const prevMsg = prevLastMsgs[r.id];
+          const curMsg  = r.lastMsg;
+          const lastSenderId = r.lastSenderId;
+          if (curMsg && curMsg !== prevMsg && lastSenderId && lastSenderId !== me.uid) {
+            // New message from someone else
+            if (r.id !== activeRoomId) {
+              showPNB(r.name || 'Chat', curMsg, r.id, r.name);
+            }
+          }
+        });
+      }
+      firstLoad = false;
+      rooms.forEach(r => { prevLastMsgs[r.id] = r.lastMsg; });
       renderRooms(rooms);
     },
     e => { console.error('Rooms error:', e.message); }
@@ -730,36 +973,55 @@ function renderRooms(rooms) {
     c.innerHTML = '<div class="empty" style="padding:24px 10px"><div class="ei" style="font-size:1.8rem">💬</div><p>Nog geen gesprekken.</p><button class="btn ba bsm" style="margin-top:12px" onclick="goTab(\'friends\')">👥 Vrienden toevoegen</button></div>';
     return;
   }
+  let totalUnread = 0;
   c.innerHTML = rooms.map(r => {
     const isG = r.type === 'group';
     const name = r.name || (isG ? 'Groep' : 'DM');
     const prev = r.lastMsg || 'Nog geen berichten';
     const tm   = r.lastAt ? ftm(r.lastAt) : '';
+    const unread = r.unread?.[me?.uid] || 0;
+    if (unread > 0) totalUnread += unread;
     const iconHTML = isG
       ? `<div class="cricon">👥</div>`
       : `<div class="cricon dm">${ini(r.name || '?')}</div>`;
     const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const safeSub  = (r.memberNames||[]).join(', ').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const unreadBadge = unread > 0 ? `<span class="unread-count">${unread}</span>` : '';
     return `<div class="cri ${r.id===activeRoomId?'act':''}" onclick="openRoom('${r.id}','${safeName}','${safeSub}')">
       ${iconHTML}
       <div class="crinfo">
-        <div class="crn">${name}</div>
-        <div class="crprev">${prev}</div>
+        <div class="crn-wrap"><div class="crn">${name}</div></div>
+        <div class="crprev" style="${unread>0?'color:var(--tx);font-weight:600':''}">${prev}</div>
       </div>
-      <div class="crtm">${tm}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="crtm">${tm}</div>
+        ${unreadBadge}
+      </div>
     </div>`;
   }).join('');
+
+  // Update nav badge
+  const chatBadge = G('chatbadge');
+  if (totalUnread > 0) {
+    chatBadge.textContent = totalUnread > 9 ? '9+' : totalUnread;
+    chatBadge.style.display = 'flex';
+  } else {
+    chatBadge.style.display = 'none';
+  }
 }
 
-window.openRoom = (id, name, sub) => {
+window.openRoom = async (id, name, sub) => {
   activeRoomId = id;
   G('roomname').textContent = name;
   G('roomsub').textContent = sub || '';
   G('msglist').innerHTML = '';
   G('crpane').classList.add('open');
   listenRoom(id);
-  // focus input
   setTimeout(() => G('msginput').focus(), 100);
+  // Clear unread for this room
+  try {
+    await updateDoc(doc(db,'rooms',id), { [`unread.${me.uid}`]: 0 });
+  } catch(e) {}
 };
 
 window.closeRoom = () => {
@@ -789,17 +1051,66 @@ function renderMessages(msgs) {
   const wasAtBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 60;
   c.innerHTML = msgs.map(m => {
     const isMine = m.uid === me?.uid;
-    return `<div class="mr ${isMine ? 'me' : ''}">
+    const reactions = m.reactions || {};
+    const reactSummary = buildReactSummary(reactions, m.id);
+    return `<div class="mr ${isMine ? 'me' : ''}" id="msg-${m.id}">
       ${!isMine ? `<div class="mava">${ini(m.name)}</div>` : ''}
       <div class="mcol">
         ${!isMine ? `<div class="mname">${m.name}</div>` : ''}
-        <div class="mbub">${escapeHTML(m.text)}</div>
+        <div class="mbub" ondblclick="openReactPicker('${m.id}',this)">${escapeHTML(m.text)}</div>
+        ${reactSummary}
         <div class="mtime">${ftm(m.createdAt)}</div>
       </div>
     </div>`;
   }).join('');
   if (wasAtBottom || msgs.length <= 5) c.scrollTop = c.scrollHeight;
 }
+
+function buildReactSummary(reactions, msgId) {
+  if (!reactions || !Object.keys(reactions).length) {
+    return `<div class="react-bar" id="rb-${msgId}"><button class="react-btn" style="opacity:.4" onclick="openReactPicker('${msgId}',this)">+ 😊</button></div>`;
+  }
+  // Aggregate by emoji
+  const counts = {};
+  Object.entries(reactions).forEach(([uid, emoji]) => {
+    counts[emoji] = (counts[emoji] || []);
+    counts[emoji].push(uid);
+  });
+  const btns = Object.entries(counts).map(([emoji, uids]) => {
+    const mine = uids.includes(me?.uid);
+    return `<button class="react-btn ${mine?'mine':''}" onclick="toggleReaction('${msgId}','${emoji}')">${emoji} ${uids.length}</button>`;
+  }).join('');
+  return `<div class="react-bar" id="rb-${msgId}">${btns}<button class="react-btn" style="opacity:.4" onclick="openReactPicker('${msgId}',this)">+</button></div>`;
+}
+
+const REACT_EMOJIS = ['❤️','😂','🔥','👍','🍺','😮','😢'];
+
+window.openReactPicker = (msgId, el) => {
+  // Close any open pickers first
+  document.querySelectorAll('.react-picker.open').forEach(p => p.classList.remove('open'));
+  const existing = document.getElementById('rpick-' + msgId);
+  if (existing) { existing.classList.toggle('open'); return; }
+  const picker = document.createElement('div');
+  picker.className = 'react-picker open';
+  picker.id = 'rpick-' + msgId;
+  picker.innerHTML = REACT_EMOJIS.map(e => `<button class="react-pick-btn" onclick="toggleReaction('${msgId}','${e}');this.closest('.react-picker').classList.remove('open')">${e}</button>`).join('');
+  const msgEl = document.getElementById('msg-' + msgId);
+  if (msgEl) msgEl.querySelector('.mcol').style.position = 'relative', msgEl.querySelector('.mcol').appendChild(picker);
+};
+
+window.toggleReaction = async (msgId, emoji) => {
+  if (!activeRoomId || !me) return;
+  const msgRef = doc(db, 'rooms', activeRoomId, 'messages', msgId);
+  const snap = await getDoc(msgRef);
+  if (!snap.exists()) return;
+  const reactions = snap.data().reactions || {};
+  if (reactions[me.uid] === emoji) {
+    delete reactions[me.uid]; // remove
+  } else {
+    reactions[me.uid] = emoji;
+  }
+  await updateDoc(msgRef, { reactions });
+};
 
 function escapeHTML(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -818,12 +1129,26 @@ async function sendMsg() {
   inp.focus();
   try {
     await addDoc(collection(db,'rooms',activeRoomId,'messages'), {
-      text, uid: me.uid, name: me.displayName || 'Onbekend', createdAt: serverTimestamp()
+      text, uid: me.uid, name: me.displayName || 'Onbekend', createdAt: serverTimestamp(), reactions: {}
     });
-    await updateDoc(doc(db,'rooms',activeRoomId), { lastMsg: text, lastAt: serverTimestamp() });
+    await updateDoc(doc(db,'rooms',activeRoomId), {
+      lastMsg: text, lastAt: serverTimestamp(),
+      lastSenderId: me.uid,
+      [`unread.${me.uid}`]: 0  // reset own unread
+    });
+    // Increment unread for all other members
+    const roomSnap = await getDoc(doc(db,'rooms',activeRoomId));
+    if (roomSnap.exists()) {
+      const members = roomSnap.data().members || [];
+      const updates = {};
+      members.filter(uid => uid !== me.uid).forEach(uid => {
+        updates[`unread.${uid}`] = (roomSnap.data().unread?.[uid] || 0) + 1;
+      });
+      if (Object.keys(updates).length) await updateDoc(doc(db,'rooms',activeRoomId), updates);
+    }
+    checkBadgeProgress('send_message');
   } catch(e) { showToast('Kon bericht niet sturen: ' + e.message); }
 }
-// expose for legacy onclick
 window.sendMsg = sendMsg;
 
 async function ensureDM(friendUid, friendName) {
@@ -1057,17 +1382,21 @@ function renderEventMaps() {
 ══════════════════════════════════════ */
 window.uploadPhoto = inp => {
   const file = inp.files[0]; if (!file) return;
-  if (file.size > 3 * 1024 * 1024) { showToast('Foto mag max 3MB zijn!'); inp.value=''; return; }
-  showToast('⏳ Foto uploaden...');
+  const isVideo = file.type.startsWith('video/');
+  const maxSize = isVideo ? 10 * 1024 * 1024 : 3 * 1024 * 1024;
+  if (file.size > maxSize) { showToast(`${isVideo?'Video':'Foto'} mag max ${isVideo?'10':'3'}MB zijn!`); inp.value=''; return; }
+  showToast('⏳ Uploaden...');
   const reader = new FileReader();
   reader.onload = async e => {
     try {
       await addDoc(collection(db,'photos'), {
         url: e.target.result, uploadedBy: me.displayName,
-        uid: me.uid, createdAt: serverTimestamp()
+        uid: me.uid, isVideo: isVideo, createdAt: serverTimestamp()
       });
-      showToast('📸 Foto gedeeld!');
+      showToast(isVideo ? '🎥 Video gedeeld!' : '📸 Foto gedeeld!');
       loadPhotos();
+      if (isVideo) checkBadgeProgress('upload_video');
+      else checkBadgeProgress('upload_photo');
     } catch(err) { showToast('Fout bij uploaden: ' + err.message); }
   };
   reader.readAsDataURL(file);
@@ -1093,11 +1422,31 @@ async function loadPhotos() {
     photos.forEach(data => {
       const cell = document.createElement('div');
       cell.className = 'pcell';
-      const img = document.createElement('img');
-      img.src = data.url; img.alt = ''; img.loading = 'lazy';
-      img.onclick = () => { G('photobig').src = data.url; openModal('mophoto'); };
-      cell.appendChild(img);
-      // delete button - always visible, only for own photos
+      if (data.isVideo) {
+        const vid = document.createElement('video');
+        vid.src = data.url; vid.muted = true; vid.playsInline = true; vid.preload = 'metadata';
+        vid.addEventListener('mouseenter', () => vid.play());
+        vid.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+        vid.onclick = () => { G('photobig').src = ''; G('photobig').style.display='none';
+          const bigVid = document.getElementById('photobigvid') || document.createElement('video');
+          bigVid.id='photobigvid'; bigVid.src=data.url; bigVid.controls=true;
+          bigVid.style='max-width:100%;max-height:80dvh;border-radius:var(--rl)';
+          const ov = G('mophoto'); ov.innerHTML=''; ov.appendChild(bigVid); openModal('mophoto'); };
+        cell.appendChild(vid);
+        const badge = document.createElement('div');
+        badge.className='media-type-badge'; badge.textContent='▶ VIDEO';
+        cell.appendChild(badge);
+      } else {
+        const img = document.createElement('img');
+        img.src = data.url; img.alt = ''; img.loading = 'lazy';
+        img.onclick = () => {
+          const ov = G('mophoto');
+          ov.innerHTML = `<img id="photobig" src="${data.url}" style="max-width:100%;max-height:80dvh;border-radius:var(--rl);box-shadow:0 16px 48px rgba(0,0,0,.8)">`;
+          openModal('mophoto');
+        };
+        cell.appendChild(img);
+      }
+      // delete button
       if (data.uid === me.uid) {
         const del = document.createElement('button');
         del.className = 'pdel';
@@ -1105,10 +1454,10 @@ async function loadPhotos() {
         del.title = 'Verwijderen';
         del.onclick = async (ev) => {
           ev.stopPropagation();
-          if (!confirm('Foto verwijderen?')) return;
+          if (!confirm('Verwijderen?')) return;
           try {
             await deleteDoc(doc(db,'photos', data.id));
-            showToast('🗑 Foto verwijderd.');
+            showToast('🗑 Verwijderd.');
             loadPhotos();
           } catch(err) { showToast('Fout: ' + err.message); }
         };
@@ -1118,6 +1467,358 @@ async function loadPhotos() {
     });
   } catch(e) { showToast('Fout bij laden foto\'s: ' + e.message); }
 }
+/* ══════════════════════════════════════
+   PUSH-STYLE IN-APP NOTIFICATIONS
+══════════════════════════════════════ */
+let pnbRoomId = null;
+let pnbRoomName = null;
+
+function showPNB(title, msg, roomId, roomName) {
+  G('pntitle').textContent = title;
+  G('pnmsg').textContent = msg;
+  pnbRoomId = roomId;
+  pnbRoomName = roomName;
+  const banner = G('pnbanner');
+  banner.classList.add('show');
+  if (pnbTimeout) clearTimeout(pnbTimeout);
+  pnbTimeout = setTimeout(() => hidePNB(), 5000);
+  // Also try native notification if permission granted
+  if (Notification.permission === 'granted' && document.hidden) {
+    new Notification(`Rounds – ${title}`, { body: msg, icon: '/favicon.ico', tag: roomId });
+  }
+}
+
+window.hidePNB = () => {
+  G('pnbanner').classList.remove('show');
+};
+
+window.pnClick = () => {
+  hidePNB();
+  if (pnbRoomId) {
+    goTab('chat');
+    setTimeout(() => openRoom(pnbRoomId, pnbRoomName, ''), 300);
+  }
+};
+
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    setTimeout(() => {
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') showToast('🔔 Notificaties ingeschakeld!');
+      });
+    }, 3000);
+  }
+}
+
+/* ══════════════════════════════════════
+   DELETE EVENT
+══════════════════════════════════════ */
+window.deleteEvent = async (evId) => {
+  if (!confirm('Event verwijderen?')) return;
+  try {
+    await deleteDoc(doc(db, 'events', evId));
+    showToast('🗑 Event verwijderd.');
+  } catch(e) { showToast('Fout: ' + e.message); }
+};
+
+/* ══════════════════════════════════════
+   RSVP LIST MODAL
+══════════════════════════════════════ */
+window.openRsvpModal = async (evId) => {
+  const evSnap = await getDoc(doc(db,'events',evId));
+  if (!evSnap.exists()) return;
+  const ev = evSnap.data();
+  currentRsvpEvData = { id: evId, ...ev };
+  G('rsvp-modal-title').textContent = ev.name;
+  const rsvps = ev.rsvps || {};
+  const yesUids = Object.entries(rsvps).filter(([,v]) => v==='yes').map(([k]) => k);
+  const mayUids = Object.entries(rsvps).filter(([,v]) => v==='maybe').map(([k]) => k);
+  const noUids  = Object.entries(rsvps).filter(([,v]) => v==='no').map(([k]) => k);
+  G('rsvp-yes-count').textContent = yesUids.length;
+  G('rsvp-maybe-count').textContent = mayUids.length;
+  G('rsvp-no-count').textContent = noUids.length;
+  currentRsvpTab = 'yes';
+  await renderRsvpList(yesUids);
+  openModal('morsvp');
+};
+
+window.showRsvpTab = async (tab) => {
+  currentRsvpTab = tab;
+  if (!currentRsvpEvData) return;
+  const rsvps = currentRsvpEvData.rsvps || {};
+  const uids = Object.entries(rsvps).filter(([,v]) => v===tab).map(([k]) => k);
+  await renderRsvpList(uids);
+};
+
+async function renderRsvpList(uids) {
+  const c = G('rsvp-modal-list');
+  if (!uids.length) { c.innerHTML = '<div style="text-align:center;color:var(--tx2);padding:16px;font-size:.85rem">Niemand in deze categorie</div>'; return; }
+  c.innerHTML = '<div style="text-align:center;color:var(--tx2);font-size:.8rem;padding:8px">Laden...</div>';
+  const statusIcon = { yes: '✅', maybe: '🤔', no: '❌' };
+  const rows = await Promise.all(uids.map(async uid => {
+    const usnap = await getDoc(doc(db,'users',uid));
+    const name = usnap.exists() ? usnap.data().name : '?';
+    return `<div class="rsvp-user">
+      <div class="rsvp-av">${ini(name)}</div>
+      <div class="rsvp-nm">${name}</div>
+      <div class="rsvp-status">${statusIcon[currentRsvpTab]}</div>
+    </div>`;
+  }));
+  c.innerHTML = rows.join('');
+}
+
+/* ══════════════════════════════════════
+   EVENT CHAT
+══════════════════════════════════════ */
+window.openEvtChat = (evId, evName) => {
+  if (unsubEvtChat) { unsubEvtChat(); unsubEvtChat = null; }
+  activeEvtChatId = evId;
+  G('evtchat-title').textContent = '💬 ' + evName;
+  G('evtchat-msgs').innerHTML = '';
+  openModal('moevtchat');
+  G('evtchat-inp').addEventListener('keydown', e => { if (e.key==='Enter') sendEvtChatMsg(); }, {once:false});
+  const q = query(collection(db,'events',evId,'chat'), orderBy('createdAt','asc'));
+  unsubEvtChat = onSnapshot(q, snap => {
+    const msgs = [];
+    snap.forEach(d => msgs.push({id:d.id,...d.data()}));
+    const c = G('evtchat-msgs');
+    if (!msgs.length) { c.innerHTML='<div style="text-align:center;color:var(--tx2);font-size:.8rem;padding:12px">Begin het gesprek!</div>'; return; }
+    const wasBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 60;
+    c.innerHTML = msgs.map(m => {
+      const isMine = m.uid === me?.uid;
+      return `<div class="mr ${isMine?'me':''}">
+        ${!isMine ? `<div class="mava">${ini(m.name)}</div>` : ''}
+        <div class="mcol">
+          ${!isMine ? `<div class="mname">${m.name}</div>` : ''}
+          <div class="mbub">${escapeHTML(m.text)}</div>
+          <div class="mtime">${ftm(m.createdAt)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    if (wasBottom) c.scrollTop = c.scrollHeight;
+  });
+};
+
+window.sendEvtChatMsg = async () => {
+  if (!activeEvtChatId || !me) return;
+  const inp = G('evtchat-inp');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  try {
+    await addDoc(collection(db,'events',activeEvtChatId,'chat'), {
+      text, uid: me.uid, name: me.displayName || 'Onbekend', createdAt: serverTimestamp()
+    });
+  } catch(e) { showToast('Fout: ' + e.message); }
+};
+
+/* ══════════════════════════════════════
+   LIVE LOCATION
+══════════════════════════════════════ */
+window.toggleShareLocation = () => {
+  if (!navigator.geolocation) { showToast('Geolocatie niet beschikbaar'); return; }
+  showToast('📍 Locatie delen gestart...');
+  G('shareloc-btn').style.display = 'none';
+  G('stoploc-btn').style.display = 'inline-flex';
+  locWatchId = navigator.geolocation.watchPosition(async pos => {
+    try {
+      await setDoc(doc(db,'liveLocations',me.uid), {
+        uid: me.uid, name: me.displayName, lat: pos.coords.latitude,
+        lng: pos.coords.longitude, updatedAt: serverTimestamp()
+      });
+    } catch(e) {}
+  }, () => {
+    showToast('❌ Geen toegang tot locatie');
+    stopShareLocation();
+  }, { enableHighAccuracy: true, maximumAge: 10000 });
+};
+
+window.stopShareLocation = async () => {
+  if (locWatchId !== null) { navigator.geolocation.clearWatch(locWatchId); locWatchId = null; }
+  G('shareloc-btn').style.display = 'inline-flex';
+  G('stoploc-btn').style.display = 'none';
+  try { await deleteDoc(doc(db,'liveLocations',me.uid)); } catch(e) {}
+  showToast('📍 Locatie delen gestopt');
+};
+
+function startLiveLocations() {
+  if (unsubLiveLoc) unsubLiveLoc();
+  unsubLiveLoc = onSnapshot(collection(db,'liveLocations'), snap => {
+    const locs = [];
+    snap.forEach(d => locs.push({id:d.id,...d.data()}));
+    // Show only friends
+    const friendUids = myFriends.map(f => f.uid);
+    const visible = locs.filter(l => friendUids.includes(l.uid) || l.uid === me?.uid);
+    const c = G('liveloc-list');
+    if (!visible.length) {
+      c.innerHTML = '<div style="font-size:.8rem;color:var(--tx2);padding:8px 0">Niemand deelt momenteel een locatie.</div>';
+      return;
+    }
+    c.innerHTML = visible.map(l => {
+      const mapsUrl = `https://www.google.com/maps?q=${l.lat},${l.lng}`;
+      return `<div class="loc-item">
+        <span class="loc-dot"></span>
+        <div class="loc-name">${l.uid===me?.uid?'Jij':l.name}</div>
+        <a href="${mapsUrl}" target="_blank" class="btn bg_ bxs">🗺️</a>
+      </div>`;
+    }).join('');
+  });
+}
+
+/* ══════════════════════════════════════
+   PROFILE PHOTO
+══════════════════════════════════════ */
+window.uploadProfilePhoto = inp => {
+  const file = inp.files[0]; if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Foto mag max 2MB zijn!'); inp.value=''; return; }
+  showToast('⏳ Profielfoto uploaden...');
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      await updateDoc(doc(db,'users',me.uid), { photoURL: e.target.result });
+      const photoData = e.target.result;
+      G('profav').innerHTML = `<img src="${photoData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      G('hav').innerHTML = `<img src="${photoData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      showToast('📸 Profielfoto bijgewerkt!');
+    } catch(err) { showToast('Fout: ' + err.message); }
+  };
+  reader.readAsDataURL(file);
+  inp.value = '';
+};
+
+/* ══════════════════════════════════════
+   DELETE ACCOUNT
+══════════════════════════════════════ */
+window.confirmDeleteAccount = async () => {
+  const pw = prompt('Voer je wachtwoord in om je account te verwijderen:');
+  if (!pw) return;
+  try {
+    const cred = EmailAuthProvider.credential(me.email, pw);
+    await reauthenticateWithCredential(me, cred);
+    if (!confirm('Weet je het zeker? Dit kan niet ongedaan worden!')) return;
+    // Clean up user data
+    await updateDoc(doc(db,'users',me.uid), { deleted: true, name: 'Verwijderde gebruiker' });
+    try { await deleteDoc(doc(db,'liveLocations',me.uid)); } catch(e) {}
+    await deleteUser(me);
+    showToast('Account verwijderd.');
+  } catch(e) {
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      showToast('❌ Verkeerd wachtwoord.');
+    } else {
+      showToast('Fout: ' + e.message);
+    }
+  }
+};
+
+/* ══════════════════════════════════════
+   BADGES & CHALLENGES
+══════════════════════════════════════ */
+const CHALLENGES = [
+  { id: 'first_message',  name: 'Eerste bericht',  emoji: '💬', desc: 'Stuur je eerste bericht', goal: 1,  track: 'send_message' },
+  { id: 'chat10',         name: 'Chatterbox',       emoji: '🗣️', desc: 'Stuur 10 berichten',    goal: 10, track: 'send_message' },
+  { id: 'first_event',    name: 'Organisator',      emoji: '🎉', desc: 'Maak je eerste event',  goal: 1,  track: 'create_event' },
+  { id: 'first_rsvp',     name: 'Aanwezig!',        emoji: '✅', desc: 'RSVP je eerste event',  goal: 1,  track: 'rsvp_yes' },
+  { id: 'first_photo',    name: 'Fotograaf',        emoji: '📸', desc: 'Upload een foto',       goal: 1,  track: 'upload_photo' },
+  { id: 'first_video',    name: 'Cameraman',        emoji: '🎥', desc: 'Upload een video',      goal: 1,  track: 'upload_video' },
+  { id: 'first_location', name: 'Op de radar',      emoji: '📍', desc: 'Deel je locatie',       goal: 1,  track: 'share_location' },
+  { id: 'social5',        name: 'Sociaal vlinder',  emoji: '🦋', desc: 'Voeg 5 vrienden toe',   goal: 5,  track: 'add_friend' },
+  { id: 'react_master',   name: 'Reactor',          emoji: '🔥', desc: 'Reageer op 5 berichten',goal: 5,  track: 'react' },
+];
+
+async function loadBadges() {
+  if (!me) return;
+  try {
+    const snap = await getDoc(doc(db,'userProgress',me.uid));
+    const progress = snap.exists() ? snap.data() : {};
+    myBadges = CHALLENGES.filter(c => (progress[c.track] || 0) >= c.goal).map(c => c.id);
+    renderProfileBadges();
+    renderChallenges(progress);
+  } catch(e) {}
+}
+
+function renderProfileBadges() {
+  const c = G('prof-badges');
+  if (!c) return;
+  c.innerHTML = CHALLENGES.map(ch => {
+    const earned = myBadges.includes(ch.id);
+    return `<div class="bdg-item ${earned?'earned':''}">
+      <span class="bdg-icon">${ch.emoji}</span>
+      <div class="bdg-name">${ch.name}</div>
+      ${!earned ? '<span class="bdg-lock">🔒</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderChallenges(progress) {
+  const c = G('challenges-list');
+  if (!c) return;
+  c.innerHTML = CHALLENGES.map(ch => {
+    const cur = Math.min(progress[ch.track] || 0, ch.goal);
+    const pct = Math.round((cur / ch.goal) * 100);
+    const done = cur >= ch.goal;
+    return `<div class="chal-item">
+      <div class="chal-icon">${ch.emoji}</div>
+      <div class="chal-info">
+        <div class="chal-name">${ch.name} ${done?'✅':''}</div>
+        <div class="chal-desc">${ch.desc} (${cur}/${ch.goal})</div>
+        <div class="chal-prog"><div class="chal-prog-bar" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function checkBadgeProgress(track, amount = 1) {
+  if (!me) return;
+  try {
+    const ref = doc(db,'userProgress',me.uid);
+    const snap = await getDoc(ref);
+    const progress = snap.exists() ? snap.data() : {};
+    const newVal = (progress[track] || 0) + amount;
+    await setDoc(ref, { [track]: newVal }, { merge: true });
+    // Check if any badge newly earned
+    const prev = progress[track] || 0;
+    CHALLENGES.filter(c => c.track === track && prev < c.goal && newVal >= c.goal).forEach(c => {
+      showToast(`🏆 Badge verdiend: ${c.emoji} ${c.name}!`, 4000);
+    });
+    loadBadges();
+  } catch(e) {}
+}
+
+// Hook rsvp to badge system
+const _origRsvp = window.rsvp;
+window.rsvp = async (evId, status) => {
+  await _origRsvp(evId, status);
+  if (status === 'yes') checkBadgeProgress('rsvp_yes');
+};
+
+// Hook acceptFr to badge system
+const _origAcceptFr = window.acceptFr;
+window.acceptFr = async (reqId, fromUid, fromName) => {
+  await _origAcceptFr(reqId, fromUid, fromName);
+  checkBadgeProgress('add_friend');
+};
+
+// Hook submitEvent
+const _origSubmitEvent = window.submitEvent;
+window.submitEvent = async () => {
+  await _origSubmitEvent();
+  checkBadgeProgress('create_event');
+};
+
+// Hook toggleShareLocation
+const _origToggleLoc = window.toggleShareLocation;
+window.toggleShareLocation = () => {
+  _origToggleLoc();
+  checkBadgeProgress('share_location');
+};
+
+// Hook toggleReaction
+const _origToggleReact = window.toggleReaction;
+window.toggleReaction = async (msgId, emoji) => {
+  await _origToggleReact(msgId, emoji);
+  checkBadgeProgress('react');
+};
+
 </script>
 </body>
 </html>
