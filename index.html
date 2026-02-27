@@ -217,6 +217,252 @@ input[type="datetime-local"].inp{color-scheme:dark}
 
 @media(min-width:600px){.tv,.ah{max-width:600px;margin-left:auto;margin-right:auto}.bn{justify-content:center}.nb{max-width:80px}}
 
+/* ═══════════════════════════════════════
+   DESKTOP LAYOUT (≥ 900px)
+═══════════════════════════════════════ */
+@media(min-width:900px){
+  /* Hide mobile elements */
+  .bn { display: none !important; }
+  .fab { display: none !important; }
+  .ah { display: none !important; }
+  .cback { display: none !important; }
+
+  /* Full-screen app shell */
+  #sap {
+    display: grid !important;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: 100dvh;
+    min-height: 100dvh;
+    max-width: none;
+  }
+
+  /* Left sidebar */
+  .desk-sidebar {
+    display: flex !important;
+    flex-direction: column;
+    background: var(--bg2);
+    border-right: 1px solid var(--brd);
+    height: 100dvh;
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+  }
+
+  .desk-logo {
+    padding: 24px 20px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.04em;
+    border-bottom: 1px solid var(--brd);
+    flex-shrink: 0;
+  }
+  .desk-logo b { color: var(--am); }
+
+  .desk-nav {
+    flex: 1;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+  }
+
+  .desk-nb {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 12px;
+    border-radius: var(--r);
+    border: none;
+    background: none;
+    color: var(--tx2);
+    font-family: 'Outfit', sans-serif;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: left;
+    position: relative;
+    width: 100%;
+  }
+  .desk-nb:hover { background: var(--surf); color: var(--tx); }
+  .desk-nb.on { background: var(--am-d); color: var(--am); }
+  .desk-nb .ic { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+  .desk-nb .nbd {
+    position: static;
+    margin-left: auto;
+    background: var(--am);
+    color: #000;
+    font-size: .6rem;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  .desk-user {
+    padding: 14px 12px;
+    border-top: 1px solid var(--brd);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .desk-user:hover { background: var(--surf); }
+  .desk-user-av {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--am), var(--or));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .75rem;
+    font-weight: 800;
+    color: #000;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .desk-user-av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .desk-user-name { font-weight: 600; font-size: .88rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .desk-user-sub { font-size: .72rem; color: var(--tx2); }
+
+  /* Main content area */
+  .desk-main {
+    display: flex !important;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+    grid-column: 2;
+  }
+
+  /* Tab views on desktop */
+  .tv {
+    max-width: none !important;
+    margin: 0 !important;
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 36px calc(28px) !important;
+  }
+
+  #tv-chat {
+    height: 100dvh !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Desktop chat layout — side by side */
+  .chat-shell {
+    display: grid !important;
+    grid-template-columns: 300px 1fr;
+    height: 100dvh;
+  }
+
+  .clist {
+    border-right: 1px solid var(--brd);
+    height: 100dvh;
+  }
+
+  .crpane {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* Always show chat pane placeholder on desktop */
+  #crpane-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--tx2);
+    gap: 12px;
+  }
+  #crpane-empty .ei { font-size: 3rem; }
+  #crpane-empty p { font-size: .88rem; }
+
+  /* Desktop event create - panel instead of fullscreen */
+  #evpage {
+    position: fixed !important;
+    inset: auto !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 460px !important;
+    border-left: 1px solid var(--brd) !important;
+    border-radius: 0 !important;
+    box-shadow: -20px 0 60px rgba(0,0,0,.5) !important;
+    z-index: 300 !important;
+    overflow-y: auto !important;
+    animation: slideInRight .25s cubic-bezier(.32,.72,0,1);
+  }
+  @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  .desk-new-event {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    margin: 8px 10px 4px;
+    border-radius: var(--r);
+    background: var(--am);
+    color: #000;
+    font-family: 'Outfit', sans-serif;
+    font-size: .88rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: background .15s;
+    width: calc(100% - 20px);
+  }
+  .desk-new-event:hover { background: #fbbf24; }
+
+  /* Modals centered on desktop */
+  .ov { align-items: center !important; padding: 24px !important; }
+  .sh {
+    border-radius: var(--rxl) !important;
+    border: 1px solid var(--brd) !important;
+    max-width: 480px !important;
+    width: 100% !important;
+    animation: fadeScaleIn .2s cubic-bezier(.32,.72,0,1) !important;
+  }
+  @keyframes fadeScaleIn { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* Photo grid bigger on desktop */
+  .pgrid { grid-template-columns: repeat(4,1fr) !important; gap: 6px !important; }
+
+  /* Events grid on desktop */
+  #evl { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  #evl .evc { margin-bottom: 0; }
+}
+
+/* Delete chat button */
+.room-del-btn {
+  background: none;
+  border: none;
+  color: var(--tx3);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: .8rem;
+  flex-shrink: 0;
+  transition: color .12s, background .12s;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.cri:hover .room-del-btn { opacity: 1; }
+.room-del-btn:hover { color: var(--rd); background: var(--rd-d); }
+
+
 /* BADGES */
 .bdg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
 .bdg-item{background:var(--surf2);border:1.5px solid var(--brd);border-radius:var(--rl);padding:12px 8px;text-align:center;position:relative;transition:border-color .15s}
@@ -355,6 +601,35 @@ input[type="datetime-local"].inp{color-scheme:dark}
 
 <!-- APP -->
 <div class="sc" id="sap">
+
+  <!-- DESKTOP SIDEBAR (hidden on mobile via CSS) -->
+  <aside class="desk-sidebar" style="display:none">
+    <div class="desk-logo">Rounds<b>.</b></div>
+    <div class="desk-nav">
+      <button class="desk-nb on" id="dnb-home" onclick="goTab('home')"><span class="ic">🏠</span> Home</button>
+      <button class="desk-nb" id="dnb-chat" onclick="goTab('chat')">
+        <span class="ic">💬</span> Chat
+        <span class="nbd" id="chatbadge2" style="display:none">0</span>
+      </button>
+      <button class="desk-nb" id="dnb-map" onclick="goTab('map')"><span class="ic">📍</span> Map</button>
+      <button class="desk-nb" id="dnb-friends" onclick="goTab('friends')"><span class="ic">👥</span> Vrienden</button>
+      <button class="desk-nb" id="dnb-photos" onclick="goTab('photos')"><span class="ic">📸</span> Media</button>
+      <div style="height:1px;background:var(--brd);margin:8px 4px"></div>
+      <button class="desk-new-event" onclick="openEventPage()">+ Nieuw event</button>
+    </div>
+    <div class="desk-user" onclick="openModal('moprof')">
+      <div class="desk-user-av" id="desk-av">?</div>
+      <div>
+        <div class="desk-user-name" id="desk-nm">—</div>
+        <div class="desk-user-sub">Profiel bekijken</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="desk-main" style="display:contents">
+
+  <!-- MOBILE HEADER -->
   <header class="ah">
     <div class="lo">Rounds<b>.</b></div>
     <div class="av" id="hav" onclick="openModal('moprof')">?</div>
@@ -391,17 +666,24 @@ input[type="datetime-local"].inp{color-scheme:dark}
       </div>
       <!-- Chat room -->
       <div class="crpane" id="crpane">
-        <div class="crphdr">
-          <button class="cback" onclick="closeRoom()">‹</button>
-          <div>
-            <div class="crhname" id="roomname">—</div>
-            <div class="crhsub" id="roomsub"></div>
-          </div>
+        <div id="crpane-empty">
+          <div class="ei">💬</div>
+          <p>Selecteer een gesprek om te beginnen</p>
         </div>
-        <div class="msgs" id="msglist"></div>
-        <div class="cinput">
-          <input class="cinp" id="msginput" placeholder="Typ een bericht..." autocomplete="off">
-          <button class="sndbtn" id="sndbtn">➤</button>
+        <div id="crpane-content" style="display:none;flex-direction:column;height:100%">
+          <div class="crphdr">
+            <button class="cback" onclick="closeRoom()">‹</button>
+            <div style="flex:1">
+              <div class="crhname" id="roomname">—</div>
+              <div class="crhsub" id="roomsub"></div>
+            </div>
+            <button class="btn br_ bxs" id="del-chat-btn" onclick="deleteCurrentChat()" title="Chat verwijderen" style="flex-shrink:0">🗑</button>
+          </div>
+          <div class="msgs" id="msglist"></div>
+          <div class="cinput">
+            <input class="cinp" id="msginput" placeholder="Typ een bericht..." autocomplete="off">
+            <button class="sndbtn" id="sndbtn">➤</button>
+          </div>
         </div>
       </div>
     </div>
@@ -447,7 +729,9 @@ input[type="datetime-local"].inp{color-scheme:dark}
     <button class="nb" id="nb-friends" onclick="goTab('friends')"><span class="ic">👥</span>Vrienden</button>
     <button class="nb" id="nb-photos" onclick="goTab('photos')"><span class="ic">📸</span>Media</button>
   </nav>
-</div>
+
+  </div><!-- end desk-main -->
+</div><!-- end sap -->
 
 <!-- FAB goes to event create page -->
 <button class="fab" id="fab" onclick="openEventPage()">+</button>
@@ -747,6 +1031,8 @@ onAuthStateChanged(auth, async user => {
     loadBadges();
     startLiveLocations();
     requestNotificationPermission();
+    initDesktop();
+    updateDesktopUser();
   } else {
     me = null; myFriends = [];
     G('sap').classList.remove('on');
@@ -765,10 +1051,12 @@ onAuthStateChanged(auth, async user => {
 window.goTab = tab => {
   document.querySelectorAll('.tv').forEach(v => v.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.desk-nb').forEach(b => b.classList.remove('on'));
   G('tv-' + tab).classList.add('on');
-  G('nb-' + tab).classList.add('on');
+  G('nb-' + tab)?.classList.add('on');
+  G('dnb-' + tab)?.classList.add('on');
   G('fab').classList.toggle('show', tab === 'home');
-  if (tab === 'chat') { G('chatbadge').style.display = 'none'; closeRoom(); }
+  if (tab === 'chat') { G('chatbadge').style.display = 'none'; G('chatbadge2').style.display = 'none'; closeRoom(); }
   if (tab === 'friends') loadFriends();
   if (tab === 'photos') loadPhotos();
   if (tab === 'map') renderEventMaps();
@@ -1001,6 +1289,11 @@ function renderRooms(rooms) {
     const safeName = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const safeSub  = (r.memberNames||[]).join(', ').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const unreadBadge = unread > 0 ? `<span class="unread-count">${unread}</span>` : '';
+    const isGroup = r.type === 'group';
+    const canDelete = isGroup ? r.createdBy === me?.uid : true;
+    const delBtn = canDelete
+      ? `<button class="room-del-btn" onclick="event.stopPropagation();deleteRoom('${r.id}','${safeName}',${isGroup})" title="${isGroup?'Groep verwijderen':'Geschiedenis wissen'}">🗑</button>`
+      : '';
     return `<div class="cri ${r.id===activeRoomId?'act':''}" onclick="openRoom('${r.id}','${safeName}','${safeSub}')">
       ${iconHTML}
       <div class="crinfo">
@@ -1011,16 +1304,20 @@ function renderRooms(rooms) {
         <div class="crtm">${tm}</div>
         ${unreadBadge}
       </div>
+      ${delBtn}
     </div>`;
   }).join('');
 
-  // Update nav badge
+  // Update badges
   const chatBadge = G('chatbadge');
+  const chatBadge2 = G('chatbadge2');
   if (totalUnread > 0) {
-    chatBadge.textContent = totalUnread > 9 ? '9+' : totalUnread;
-    chatBadge.style.display = 'flex';
+    const label = totalUnread > 9 ? '9+' : totalUnread;
+    chatBadge.textContent = label; chatBadge.style.display = 'flex';
+    chatBadge2.textContent = label; chatBadge2.style.display = 'flex';
   } else {
     chatBadge.style.display = 'none';
+    chatBadge2.style.display = 'none';
   }
 }
 
@@ -1029,10 +1326,14 @@ window.openRoom = async (id, name, sub) => {
   G('roomname').textContent = name;
   G('roomsub').textContent = sub || '';
   G('msglist').innerHTML = '';
+  // Desktop: show content pane, hide empty state
+  const empty = G('crpane-empty');
+  const content = G('crpane-content');
+  if (empty) empty.style.display = 'none';
+  if (content) { content.style.display = 'flex'; }
   G('crpane').classList.add('open');
   listenRoom(id);
   setTimeout(() => G('msginput').focus(), 100);
-  // Clear unread for this room
   try {
     await updateDoc(doc(db,'rooms',id), { [`unread.${me.uid}`]: 0 });
   } catch(e) {}
@@ -1041,6 +1342,11 @@ window.openRoom = async (id, name, sub) => {
 window.closeRoom = () => {
   activeRoomId = null;
   G('crpane').classList.remove('open');
+  // Desktop: show empty state again
+  const empty = G('crpane-empty');
+  const content = G('crpane-content');
+  if (empty) empty.style.display = 'flex';
+  if (content) content.style.display = 'none';
   if (unsubRoom) { unsubRoom(); unsubRoom = null; }
 };
 
@@ -1769,6 +2075,8 @@ window.uploadProfilePhoto = inp => {
       const photoData = e.target.result;
       G('profav').innerHTML = `<img src="${photoData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
       G('hav').innerHTML = `<img src="${photoData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      const deskAv = G('desk-av');
+      if (deskAv) deskAv.innerHTML = `<img src="${photoData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
       showToast('📸 Profielfoto bijgewerkt!');
     } catch(err) { showToast('Fout: ' + err.message); }
   };
@@ -1908,6 +2216,90 @@ window.toggleReaction = async (msgId, emoji) => {
   await _origToggleReact(msgId, emoji);
   checkBadgeProgress('react');
 };
+
+/* ══════════════════════════════════════
+   DELETE CHAT / GROUP
+══════════════════════════════════════ */
+window.deleteRoom = async (roomId, name, isGroup) => {
+  const msg = isGroup
+    ? `Groep "${name}" verwijderen? Dit verwijdert de groep voor iedereen.`
+    : `Chatgeschiedenis met "${name}" wissen? Jouw berichten worden verwijderd.`;
+  if (!confirm(msg)) return;
+  try {
+    if (isGroup) {
+      // Delete all messages then the room
+      const msgs = await getDocs(collection(db,'rooms',roomId,'messages'));
+      await Promise.all(msgs.docs.map(d => deleteDoc(d.ref)));
+      await deleteDoc(doc(db,'rooms',roomId));
+      showToast('🗑 Groep verwijderd.');
+    } else {
+      // For DMs: delete only own messages
+      const msgs = await getDocs(query(
+        collection(db,'rooms',roomId,'messages'),
+        where('uid','==',me.uid)
+      ));
+      await Promise.all(msgs.docs.map(d => deleteDoc(d.ref)));
+      await updateDoc(doc(db,'rooms',roomId), {
+        lastMsg: '🗑 Berichten gewist', lastAt: serverTimestamp()
+      });
+      showToast('🗑 Jouw berichten gewist.');
+    }
+    if (activeRoomId === roomId) closeRoom();
+  } catch(e) { showToast('Fout: ' + e.message); }
+};
+
+window.deleteCurrentChat = async () => {
+  if (!activeRoomId) return;
+  const roomSnap = await getDoc(doc(db,'rooms',activeRoomId));
+  if (!roomSnap.exists()) return;
+  const r = roomSnap.data();
+  const isGroup = r.type === 'group';
+  const name = G('roomname').textContent;
+  await deleteRoom(activeRoomId, name, isGroup);
+};
+
+/* ══════════════════════════════════════
+   DESKTOP INIT
+══════════════════════════════════════ */
+function initDesktop() {
+  const isDesktop = window.innerWidth >= 900;
+  if (isDesktop) {
+    // Show sidebar, switch layout
+    const sidebar = document.querySelector('.desk-sidebar');
+    const main = document.querySelector('.desk-main');
+    if (sidebar) sidebar.style.display = 'flex';
+    if (main) main.style.display = 'flex';
+    // Hide fab, show desktop new event btn
+    G('fab').classList.remove('show');
+  }
+}
+
+window.addEventListener('resize', () => {
+  const isDesktop = window.innerWidth >= 900;
+  const sidebar = document.querySelector('.desk-sidebar');
+  const main = document.querySelector('.desk-main');
+  if (sidebar) sidebar.style.display = isDesktop ? 'flex' : 'none';
+  if (main) main.style.display = isDesktop ? 'flex' : 'contents';
+  if (isDesktop && me) G('fab').classList.remove('show');
+  else if (me) G('fab').classList.add('show');
+});
+
+function updateDesktopUser() {
+  if (!me) return;
+  const deskAv = G('desk-av');
+  const deskNm = G('desk-nm');
+  if (!deskAv || !deskNm) return;
+  deskNm.textContent = me.displayName || '';
+  // Try to get photo from Firestore
+  getDoc(doc(db,'users',me.uid)).then(snap => {
+    const photo = snap.exists() ? snap.data().photoURL : null;
+    if (photo) {
+      deskAv.innerHTML = `<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    } else {
+      deskAv.textContent = ini(me.displayName);
+    }
+  }).catch(() => { deskAv.textContent = ini(me.displayName); });
+}
 
 </script>
 </body>
