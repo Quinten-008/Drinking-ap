@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read: if isLoggedIn();
+      allow write: if isOwner(uid);
+    }
+
+    match /events/{evId} {
+      allow read: if isLoggedIn();
+      allow create: if isLoggedIn();
+      allow update: if isLoggedIn();
+      allow delete: if isLoggedIn() && request.auth.uid == resource.data.createdBy;
+
+      match /chat/{msgId} {
+        allow read, create: if isLoggedIn();
+      }
+    }
+
+    match /friendRequests/{reqId} {
+      allow read: if isLoggedIn();
+      allow create: if isLoggedIn();
+      allow update: if isLoggedIn();
+    }
+
+    match /rooms/{roomId} {
+      allow read, write: if isLoggedIn() &&
+        request.auth.uid in resource.data.members;
+      allow create: if isLoggedIn();
+
+      match /messages/{msgId} {
+        allow read, create: if isLoggedIn();
+        allow update: if isLoggedIn();
+      }
+    }
+
+    match /photos/{photoId} {
+      allow read: if isLoggedIn();
+      allow create: if isLoggedIn();
+      allow delete: if isLoggedIn() && request.auth.uid == resource.data.uid;
+    }
+
+    match /liveLocations/{uid} {
+      allow read: if isLoggedIn();
+      allow write: if isOwner(uid);
+    }
+
+    match /userProgress/{uid} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // Push notificatie wachtrij — alleen aanmaken, lezen door Cloud Function
+    match /pushQueue/{docId} {
+      allow create: if isLoggedIn();
+      allow read, update: if false; // alleen Cloud Function mag dit
+    }
+  }
+}

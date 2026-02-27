@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="Rounds">
 <meta name="theme-color" content="#0d0d0d">
 <title>Rounds</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -598,6 +600,9 @@ import {
   onSnapshot, query, orderBy, serverTimestamp,
   doc, setDoc, getDoc, updateDoc, where, limit
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import {
+  getMessaging, getToken, onMessage
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js";
 
 /* ── INIT ── */
 const firebaseApp = initializeApp({
@@ -610,6 +615,7 @@ const firebaseApp = initializeApp({
 });
 const auth = getAuth(firebaseApp);
 const db   = getFirestore(firebaseApp);
+const messaging = getMessaging(firebaseApp);
 setPersistence(auth, browserLocalPersistence).catch(() => {});
 
 /* ── STATE ── */
@@ -1134,8 +1140,27 @@ async function sendMsg() {
     await updateDoc(doc(db,'rooms',activeRoomId), {
       lastMsg: text, lastAt: serverTimestamp(),
       lastSenderId: me.uid,
-      [`unread.${me.uid}`]: 0  // reset own unread
+      [`unread.${me.uid}`]: 0
     });
+    // Write push notification request for other members
+    const roomSnap2 = await getDoc(doc(db,'rooms',activeRoomId));
+    if (roomSnap2.exists()) {
+      const members = roomSnap2.data().members || [];
+      const roomName = roomSnap2.data().name || 'Chat';
+      for (const uid of members.filter(u => u !== me.uid)) {
+        const uSnap = await getDoc(doc(db,'users',uid));
+        const token = uSnap.exists() ? uSnap.data().fcmToken : null;
+        if (token) {
+          // Store push request — Cloud Function or your own server picks this up
+          await addDoc(collection(db,'pushQueue'), {
+            token, title: `Rounds – ${roomName}`,
+            body: `${me.displayName}: ${text}`,
+            data: { roomId: activeRoomId },
+            createdAt: serverTimestamp(), sent: false
+          });
+        }
+      }
+    }
     // Increment unread for all other members
     const roomSnap = await getDoc(doc(db,'rooms',activeRoomId));
     if (roomSnap.exists()) {
@@ -1501,12 +1526,58 @@ window.pnClick = () => {
 };
 
 function requestNotificationPermission() {
-  if ('Notification' in window && Notification.permission === 'default') {
-    setTimeout(() => {
-      Notification.requestPermission().then(p => {
-        if (p === 'granted') showToast('🔔 Notificaties ingeschakeld!');
-      });
-    }, 3000);
+  if (!('Notification' in window)) return;
+
+  // Register service worker first
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(reg => {
+        console.log('[FCM] Service worker geregistreerd:', reg.scope);
+        navigator.serviceWorker.addEventListener('message', event => {
+          if (event.data?.type === 'OPEN_ROOM' && event.data.roomId) {
+            goTab('chat');
+            setTimeout(() => openRoom(event.data.roomId, '', ''), 400);
+          }
+        });
+      })
+      .catch(err => console.warn('[FCM] SW registratie mislukt:', err));
+  }
+
+  if (Notification.permission === 'default') {
+    setTimeout(async () => {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        showToast('🔔 Notificaties ingeschakeld!');
+        await saveFCMToken();
+      }
+    }, 4000);
+  } else if (Notification.permission === 'granted') {
+    saveFCMToken();
+  }
+
+  // Luister naar berichten terwijl app open is (foreground)
+  onMessage(messaging, payload => {
+    console.log('[FCM] Foreground bericht:', payload);
+    const title = payload.notification?.title || 'Rounds';
+    const body  = payload.notification?.body  || 'Nieuw bericht';
+    const roomId = payload.data?.roomId;
+    showPNB(title, body, roomId, title);
+  });
+}
+
+async function saveFCMToken() {
+  if (!me) return;
+  try {
+    const token = await getToken(messaging, {
+      vapidKey: 'BIzWhUjE5bCOpKlMCzR6YH772EcCz_HWTw7g5-g3X8bpnOgmHH0tzbGGTPH_9Gn74Md3s5TDcaoIGlv2w6iFKsw',
+      serviceWorkerRegistration: await navigator.serviceWorker.ready
+    });
+    if (token) {
+      await updateDoc(doc(db, 'users', me.uid), { fcmToken: token });
+      console.log('[FCM] Token opgeslagen');
+    }
+  } catch(e) {
+    console.warn('[FCM] Token ophalen mislukt:', e.message);
   }
 }
 
