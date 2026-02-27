@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -271,7 +272,7 @@ input[type="datetime-local"].inp{color-scheme:dark}
       <div class="clist" id="clistpane">
         <div class="clhdr">
           <div class="cltitle">Gesprekken</div>
-          <button class="btn bg_ bsm" onclick="openModal('mogrp')">+ Groep</button>
+          <button class="btn bg_ bsm" onclick="openNewGroup()">+ Groep</button>
         </div>
         <div class="clscroll" id="roomlist">
           <div class="empty" style="padding:30px 10px"><div class="ei" style="font-size:2rem">💬</div><p>Voeg vrienden toe om te chatten!</p><button class="btn ba bsm" style="margin-top:12px" onclick="goTab('friends')">👥 Vrienden toevoegen</button></div>
@@ -295,24 +296,12 @@ input[type="datetime-local"].inp{color-scheme:dark}
     </div>
   </div>
 
-  <!-- MAP -->
+
+  <!-- MAP - shows locations from events -->
   <div class="tv" id="tv-map">
-    <div class="pt">Meeting Point</div>
-    <div class="ps">Stel de locatie in voor iedereen</div>
-    <div id="mframe"><div class="mempty"><div class="ei">📍</div><div>Nog geen locatie ingesteld</div></div></div>
-    <div id="savedloc" style="display:none" class="card">
-      <div class="sl">Huidig meeting point</div>
-      <div style="font-weight:700;font-size:1rem;margin-bottom:3px" id="slname"></div>
-      <div style="font-size:.79rem;color:var(--tx2);margin-bottom:10px" id="slmeta"></div>
-      <a id="slgmaps" href="#" target="_blank" class="btn bg_ bsm">🗺️ Open in Google Maps</a>
-    </div>
-    <div class="card">
-      <div class="sl" style="margin-bottom:10px">Locatie instellen</div>
-      <div class="iw"><label class="fl">Straat & huisnummer</label><input class="inp" id="locstreet" placeholder="bijv. Grote Markt 1"></div>
-      <div class="iw"><label class="fl">Stad</label><input class="inp" id="loccity" placeholder="bijv. Mechelen"></div>
-      <div class="iw"><label class="fl">Naam van het café / locatie</label><input class="inp" id="locname" placeholder="bijv. Café De Kroon"></div>
-      <button class="btn ba bw" onclick="saveLoc()">📍 Locatie opslaan</button>
-    </div>
+    <div class="pt">Locaties</div>
+    <div class="ps">Kaarten van aankomende events</div>
+    <div id="evmaplist"><div class="empty"><div class="ei">📍</div><p>Nog geen events met locatie.<br>Maak een event aan!</p></div></div>
   </div>
 
   <!-- FRIENDS -->
@@ -358,11 +347,13 @@ input[type="datetime-local"].inp{color-scheme:dark}
     <div class="mt">🍺 Nieuw event aanmaken</div>
     <div class="iw"><label class="fl">Naam *</label><input class="inp" id="evname" placeholder="bijv. Vrijdagavond uit!"></div>
     <div class="iw"><label class="fl">Datum & tijd *</label><input class="inp" type="datetime-local" id="evdate"></div>
-    <div class="iw"><label class="fl">Locatie (optioneel)</label><input class="inp" id="evloc" placeholder="bijv. Café De Kroon, Mechelen"></div>
+    <div class="iw"><label class="fl">Straat & huisnummer</label><input class="inp" id="evstreet" placeholder="bijv. Grote Markt 1"></div>
+    <div class="iw"><label class="fl">Stad</label><input class="inp" id="evcity" placeholder="bijv. Mechelen"></div>
+    <div class="iw"><label class="fl">Naam locatie (optioneel)</label><input class="inp" id="evloc" placeholder="bijv. Café De Kroon"></div>
     <div class="iw"><label class="fl">Beschrijving (optioneel)</label><textarea class="inp" id="evdesc" rows="3" placeholder="Meer info..."></textarea></div>
     <div style="display:flex;gap:8px;margin-top:4px">
       <button class="btn bg_" style="flex:0 0 auto" onclick="closeModal('moev')">Annuleren</button>
-      <button class="btn ba" style="flex:1" onclick="createEvent()">Event aanmaken 🎉</button>
+      <button class="btn ba" id="evsubmitbtn" style="flex:1" onclick="createEvent()">Event aanmaken 🎉</button>
     </div>
   </div>
 </div>
@@ -506,7 +497,6 @@ onAuthStateChanged(auth, async user => {
     await loadFriends();
     startEvents();
     startRooms();
-    loadLocation();
     loadPhotos();
   } else {
     me = null; myFriends = [];
@@ -529,55 +519,77 @@ window.goTab = tab => {
   if (tab === 'chat') { G('chatbadge').style.display = 'none'; closeRoom(); }
   if (tab === 'friends') loadFriends();
   if (tab === 'photos') loadPhotos();
+  if (tab === 'map') renderEventMaps();
 };
 
 /* ══════════════════════════════════════
    EVENTS
 ══════════════════════════════════════ */
 window.createEvent = async () => {
-  const name = G('evname').value.trim();
+  const name    = G('evname').value.trim();
   const dateVal = G('evdate').value;
-  const loc  = G('evloc').value.trim();
-  const desc = G('evdesc').value.trim();
+  const street  = G('evstreet').value.trim();
+  const city    = G('evcity').value.trim();
+  const locName = G('evloc').value.trim();
+  const desc    = G('evdesc').value.trim();
 
-  if (!name) { showToast('❌ Vul een naam in voor het event!'); return; }
+  if (!name) { showToast('❌ Vul een naam in!'); return; }
   if (!dateVal) { showToast('❌ Kies een datum en tijd!'); return; }
 
   const dateObj = new Date(dateVal);
   if (isNaN(dateObj.getTime())) { showToast('❌ Ongeldige datum!'); return; }
 
-  // Disable button to prevent double submit
-  const btn = document.querySelector('#moev .ba');
-  if (btn) { btn.disabled = true; btn.textContent = 'Bezig...'; }
+  // Build location string
+  let locationStr = '';
+  if (locName && street && city) locationStr = `${locName}, ${street}, ${city}`;
+  else if (locName && city) locationStr = `${locName}, ${city}`;
+  else if (street && city) locationStr = `${street}, ${city}`;
+  else if (locName) locationStr = locName;
+
+  const btn = G('evsubmitbtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Bezig...';
 
   try {
     await addDoc(collection(db, 'events'), {
-      name, date: dateObj, location: loc, description: desc,
-      createdBy: me.uid, createdByName: me.displayName || 'Onbekend',
-      rsvps: {}, createdAt: serverTimestamp()
+      name,
+      date: dateObj,
+      location: locationStr,
+      description: desc,
+      createdBy: me.uid,
+      createdByName: me.displayName || 'Onbekend',
+      rsvps: {},
+      createdAt: serverTimestamp()
     });
+    // clear form
+    G('evname').value = '';
+    G('evdate').value = '';
+    G('evstreet').value = '';
+    G('evcity').value = '';
+    G('evloc').value = '';
+    G('evdesc').value = '';
     closeModal('moev');
-    G('evname').value = ''; G('evloc').value = ''; G('evdesc').value = '';
     showToast('🎉 Event aangemaakt!');
   } catch(e) {
-    showToast('Fout: ' + e.message);
+    showToast('❌ Fout: ' + e.message);
+    console.error('createEvent error:', e);
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Event aanmaken 🎉'; }
+    btn.disabled = false;
+    btn.textContent = 'Event aanmaken 🎉';
   }
 };
 
 function startEvents() {
   if (unsubEvs) unsubEvs();
-  // Use simple collection listener - no composite index needed
   unsubEvs = onSnapshot(collection(db, 'events'), snap => {
     const evs = [];
     snap.forEach(d => evs.push({ id: d.id, ...d.data() }));
-    // sort client-side by date descending
     evs.sort((a, b) => {
       const da = a.date?.toDate ? a.date.toDate() : new Date(0);
       const db2 = b.date?.toDate ? b.date.toDate() : new Date(0);
       return da - db2;
     });
+    latestEvents = evs; // cache for map tab
     renderEvents(evs);
   }, e => { console.error('Events error:', e.message); });
 }
@@ -819,11 +831,15 @@ window.createGroup = async () => {
   } catch(e) { showToast('Fout: ' + e.message); }
 };
 
-window.openNewGroup = () => {
+window.openNewGroup = async () => {
   selMembers = [];
-  renderGroupPicker();
   G('grpname').value = '';
+  G('grpchips').innerHTML = '';
+  G('grppicker').innerHTML = '<p style="font-size:.82rem;color:var(--tx2);padding:6px 0">Vrienden laden...</p>';
   openModal('mogrp');
+  // reload friends fresh so picker is always up to date
+  await loadFriends();
+  renderGroupPicker();
 };
 
 /* ══════════════════════════════════════
@@ -943,52 +959,31 @@ window.openDM = async (uid, name) => {
 };
 
 /* ══════════════════════════════════════
-   MAP / LOCATION
+   EVENT MAPS
 ══════════════════════════════════════ */
-window.saveLoc = async () => {
-  const street = G('locstreet').value.trim();
-  const city   = G('loccity').value.trim();
-  const name   = G('locname').value.trim();
-  if (!street || !city) { showToast('Vul straat en stad in!'); return; }
-  const fullAddress = `${name ? name + ', ' : ''}${street}, ${city}`;
-  // Geocode via nominatim
-  showToast('⏳ Locatie zoeken...');
-  try {
-    const query2 = encodeURIComponent(`${street}, ${city}`);
-    const resp = await fetch(`https://nominatim.openstreetmap.org/search?q=${query2}&format=json&limit=1`, {
-      headers: { 'Accept-Language': 'nl' }
-    });
-    const results = await resp.json();
-    let lat = 51.0259, lng = 4.4776;
-    if (results.length) {
-      lat = parseFloat(results[0].lat);
-      lng = parseFloat(results[0].lon);
-    } else {
-      showToast('⚠️ Adres niet gevonden, standaard locatie gebruikt.');
-    }
-    await setDoc(doc(db,'settings','meetingpoint'), {
-      name: fullAddress, lat, lng,
-      updatedBy: me.displayName, updatedAt: serverTimestamp()
-    });
-    G('locstreet').value = ''; G('loccity').value = ''; G('locname').value = '';
-    showToast('📍 Locatie opgeslagen!');
-    loadLocation();
-  } catch(e) { showToast('Kon locatie niet opslaan: ' + e.message); }
-};
+// cache of latest events for map tab
+let latestEvents = [];
 
-async function loadLocation() {
-  try {
-    const snap = await getDoc(doc(db,'settings','meetingpoint'));
-    if (!snap.exists()) return;
-    const d = snap.data();
-    G('mframe').innerHTML = `<iframe
-      src="https://www.openstreetmap.org/export/embed.html?bbox=${d.lng-.012},${d.lat-.008},${d.lng+.012},${d.lat+.008}&layer=mapnik&marker=${d.lat},${d.lng}"
-      style="width:100%;height:100%;border:0" loading="lazy"></iframe>`;
-    G('slname').textContent = d.name;
-    G('slmeta').textContent = `Ingesteld door ${d.updatedBy || 'onbekend'}`;
-    G('slgmaps').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.name)}`;
-    G('savedloc').style.display = 'block';
-  } catch(e) {}
+function renderEventMaps() {
+  const c = G('evmaplist');
+  const eventsWithLoc = latestEvents.filter(ev => ev.location && ev.location.trim());
+  if (!eventsWithLoc.length) {
+    c.innerHTML = '<div class="empty"><div class="ei">📍</div><p>Nog geen events met locatie.<br>Maak een event aan met een adres!</p></div>';
+    return;
+  }
+  c.innerHTML = eventsWithLoc.map(ev => {
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.location)}`;
+    const osmUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(ev.location)}`;
+    return `<div class="card" style="margin-bottom:14px">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px">${ev.name}</div>
+      <div style="font-size:.8rem;color:var(--tx2);margin-bottom:10px">📍 ${ev.location}</div>
+      <iframe
+        src="https://www.openstreetmap.org/export/embed.html?query=${encodeURIComponent(ev.location)}&layer=mapnik"
+        style="width:100%;height:200px;border:0;border-radius:10px;margin-bottom:10px"
+        loading="lazy"></iframe>
+      <a href="${mapsUrl}" target="_blank" class="btn bg_ bsm">🗺️ Open in Google Maps</a>
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════════════════════════════
